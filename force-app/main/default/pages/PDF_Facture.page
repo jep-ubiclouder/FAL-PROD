@@ -1,0 +1,318 @@
+<apex:page cache="false" standardController="EUcom__Invoice__c" extensions="Ctrl_PDF_facture" action="{!getData}" showheader="false" standardStylesheets="false"
+    applyBodyTag="false" applyHtmlTag="false" renderAs="pdf" >
+<!-- renderAs="pdf" -->
+   <head>
+      <style type="text/css">
+         @page {
+            size: A4;
+            padding: 0px;
+            margin: 0px;
+         }
+         html {
+            font-size: 11pt;
+            font-family: sans-serif;
+            position: relative;
+            min-height: 100%;
+            line-height: 19px;
+         }
+
+         #FirstPage {
+            /* Ne rien changer dans cette section pour l'inclusion correcte du fond de page FAL */
+            position: absolute;
+            width: 210mm;
+            height: 297mm;
+            margin: -8px;
+
+         }
+
+         #FirstPage img {
+            /* Ne rien changer dans cette section pour l'inclusion correcte du fond de page FAL */
+            position: absolute;
+            width: 100%;
+            height: 100%;
+         }
+
+         .addresse {
+            display: block;
+            position:relative;
+            left: 12cm;
+            text-align: left;
+            margin-top: 3.8cm;
+            padding-bottom:0.5cm;
+         }
+         .place {
+            display: block;
+            position:relative;
+            left: 2.5cm;
+            text-align: left;
+         }
+         .inline{
+            margin-top:0.5cm;
+            display: block;
+            position:relative;
+            left: 2.5cm;
+            text-align: left;
+         }
+         .facture{
+            display: inline-block;
+            position:relative;
+            text-align: left;
+            width: 35%;
+            left: 2.3cm;
+         }
+         .concerne{
+            display: inline-block;
+            position:relative;
+            text-align: left;
+            width: 50%;
+            left: 6cm;
+         }
+         .Invoicedetails{
+            margin-top: 0.5cm;
+            padding-bottom:0!important;
+            position:relative;
+            text-align: left;
+            width: 18.5cm;
+            left:2cm;
+         }
+         .d1{
+            position: relative;
+            top: 0;
+         }
+         .d2{
+            position: absolute; 
+            top: 0;
+            z-index:10;
+         }
+         table.table1{ 
+            width: 100%; 
+            border-collapse: collapse; 
+         } 
+         table.table1 td{
+            padding-top:0!important;
+            padding-bottom:0!important; 
+            padding-left:5px!important; 
+            vertical-align: bottom; 
+            margin: 0; 
+            text-align: left; 
+            
+         } 
+
+         table.table2{ 
+            width: 100%; 
+            border-collapse: collapse; 
+         } 
+         table.table2 td{
+            padding-top:0!important;
+            padding-bottom:0!important; 
+            padding-left:5px!important; 
+            vertical-align: bottom; 
+            margin: 0; 
+            text-align: left; 
+         } 
+         .second{
+            display: flex;
+            position:relative;
+            text-align: left;
+            width: 20cm;
+            left:2cm;
+         }
+         .Total{
+            display: inline-block;
+            text-align: left;
+            width: 8cm;
+            height: 3.5cm;
+            font-size: 12px;
+            padding-left:5px;
+
+         }
+         .Iban{
+            display: inline-block;
+            text-align: left;
+            width: 10.5cm;
+            height: 3.5cm;
+            font-size: 12px;
+            padding-left:5px;
+            border: 1.5px solid black;
+         }
+         .second-container {
+            position: absolute;
+            bottom: 1.7cm;
+            width: auto;
+         }
+         .Iban table{
+            border-collapse: collapse;
+         }
+      </style>
+        
+   </head>
+
+   <body>
+   <div id="FirstPage">
+      <img src="{!URLFOR($Resource.PAPIER_ENTETE)}" alt="" />
+      <div class="addresse">
+            <b><apex:outputText value="{!facture.LastName} {!facture.FirstName}" /></b>
+            <br/><br/>
+            <apex:outputText value="{!facture.MailingStreet} " />
+            <br/>
+            <apex:outputText value="{!facture.MailingCode} {!facture.MailingCity} " />
+            <br/>
+            <apex:outputText value="{!facture.MailingCountry} " />
+            
+      </div>
+      <div class = "place">
+            <b>Concerne :&nbsp;<apex:outputText value="{!facture.ChildLastName} {!facture.ChildFirstName} " /></b> 
+            <br/><br/>
+      </div>
+      <div class="inline">
+         <div class="facture">
+            <b>Facture nº :&nbsp;<apex:outputText value="{!facture.invoicenumber}"></apex:outputText></b>
+         </div>
+         <div class="concerne">
+               <b><apex:outputText value="Date {0,date,dd'/'MM'/'yyyy}">
+                  <apex:param value="{!EUcom__Invoice__c.EUcom__Billing_date__c}" />
+               </apex:outputtext></b>
+         </div>
+      </div>
+      <div class="Invoicedetails">   
+         <div class="d1">
+            <table width="90%" style="vertical-align: top; padding-left:0;" class="table1">
+               <tr>
+                  <td width="15%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">Réf. Article</td>
+                  <td width="43%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">Désignation</td>
+                  <td width="6%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">Qté</td>
+                  <td width="8%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">P.U.</td>
+                  <td width="9%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">% Rem</td>
+                  <td width="10%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">HTVA</td>
+                  <td width="9%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">% TVA</td>
+               </tr>
+            <apex:repeat value="{!listfacture}" var="lfinfo" >
+               <tr style="border-left: 1.5px solid black;" >
+                  <td width="15%" style="vertical-align: top; border-left: 1.5px solid black;"><p><apex:outputText escape="false" value="{!lfinfo.refer}"/></p></td>
+                  <td width="43%" style="vertical-align: top; border-left: 1.5px solid black;">
+                  <p><apex:outputText escape="false" value="{!lfinfo.designation}"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <apex:outputText value="{0,date,MM'/'yyyy}">
+                     <apex:param value="{!lfinfo.SDate}" />
+                  </apex:outputtext></p>
+                  </td>
+                  <td width="6%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black;">1,00</td>
+                  <td width="8%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black;"><apex:outputText value="{!lfinfo.Amount}"/></td>
+                  <td width="9%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black;">0,00</td>
+                  <td width="10%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black;"><apex:outputText value="{!lfinfo.Amount}"/></td>
+                  <td width="9%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black; border-right: 1.5px solid black;">0</td>
+               </tr>
+            </apex:repeat>
+         </table> 
+         </div>
+         
+         <!-- Background table -->
+         <div class="d2">
+            <table width="90%" style="vertical-align: top; padding-left:0;" class="table1">
+               <tr>
+                  <td width="15%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">Réf. Article</td>
+                  <td width="43%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">Désignation</td>
+                  <td width="6%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">Qté</td>
+                  <td width="8%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">P.U.</td>
+                  <td width="9%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">% Rem</td>
+                  <td width="10%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">HTVA</td>
+                  <td width="9%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1.5px solid black; text-align:center; font-weight:700;">% TVA</td>
+               </tr>
+               <tr style="border-left: 1.5px solid black;" >
+                  <td width="15%" style="vertical-align: top; border-left: 1.5px solid black;"><p><apex:outputText escape="false" value="{!listfacture[0].refer}"/></p></td>
+                  <td width="43%" style="vertical-align: top; border-left: 1.5px solid black;">
+                  <p><apex:outputText escape="false" value="{!listfacture[0].designation}"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <apex:outputText value="{0,date,MM'/'yyyy}">
+                     <apex:param value="{!listfacture[0].SDate}" />
+                  </apex:outputtext></p>
+                  </td>
+                  <td width="6%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black;">1,00</td>
+                  <td width="8%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black;"><apex:outputText value="{!listfacture[0].Amount}"/></td>
+                  <td width="9%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black;">0,00</td>
+                  <td width="10%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black;"><apex:outputText value="{!listfacture[0].Amount}"/></td>
+                  <td width="9%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black; border-right: 1.5px solid black;">0</td>
+               </tr>
+            <tr style="border-left: 1.5px solid black;" >
+               <td width="15%" style="vertical-align: top; border-left: 1.5px solid black;  border-bottom: 1.5px solid black;"></td>
+               <td width="43%" style="vertical-align: top; border-left: 1.5px solid black;  border-bottom: 1.5px solid black;"></td>
+               <td width="6%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black;  border-bottom: 1.5px solid black;"></td>
+               <td width="8%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black;  border-bottom: 1.5px solid black;"></td>
+               <td width="9%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black;  border-bottom: 1.5px solid black;"></td>
+               <td width="10%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black;  border-bottom: 1.5px solid black;"></td>
+               <td width="9%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important; border-left: 1.5px solid black; border-right: 1.5px solid black;height:12cm;  border-bottom: 1.5px solid black;"></td>
+            </tr>
+            <tr>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td><span style="font-size:8pt; font-weight:700;">Page 1 / 1</span></td>
+            </tr>
+         </table>      
+         </div>
+
+         <!-- End background table -->
+         
+      </div>
+      <div class="second-container">
+         <div class="second">
+            <div class="Iban">
+               <table>
+                  <tr>
+                     <td colspan="2">
+                        <p style=" font-weight: 700; text-decoration: underline; margin:0; padding:0;">Informations pour le paiement :</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td style="width:12%">
+                        <b>IBAN :&nbsp;</b>
+                     </td>
+                     <td style="width:4cm"><apex:outputText value="{!$Label.FAL_Iban}" escape="false" /><br/></td>
+                  </tr>
+                  <tr>
+                     <td style="width:12%">
+                        <b>BIC :</b>
+                     </td>
+                     <td style="width:4cm">
+                        <apex:outputText value="{!$Label.FAL_BIC}" escape="false"/><br/>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="2">
+                        <p style="font-weight: 700; text-decoration: underline; margin:0; padding:0;">Communication à faire lors du paiement :</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="2">
+                        FLOI&nbsp;&nbsp;
+                        <apex:outputText value="{!facture.invoicenumber}"></apex:outputText>&nbsp;&nbsp;
+                        <apex:outputText escape="false" value="{!listfacture[0].designation}" />&nbsp;&nbsp;&nbsp;&nbsp;
+                        <apex:outputText value="{0,date,MM'/'yyyy}">
+                           <apex:param value="{!listfacture[0].SDate}" />
+                        </apex:outputText>
+                     </td>
+                  </tr>
+               </table> 
+         </div>
+         <div style="position:absolute; left:8.55cm; bottom:3.85cm;">
+            <apex:image value="{!$Resource.QR_code_facture}" width="2cm" alt="!"/>
+         </div>
+           
+            <div class="Total">
+               <p></p>
+               <table width="80%" style="vertical-align: bottom; padding-left:0;" class="table2">
+                  <tr>
+                     <td width="50%" style="vertical-align: bottom; padding-bottom:15px!important; border:none; font-size: 18px;">Total à payer :</td>
+                     <td width="50%" style="vertical-align: bottom; padding-bottom:15px!important; text-align:left; border:none; font-size: 18px;"><b><apex:outputText value="{!facture.AmountTotal}"/> EUR</b></td>
+                  </tr>
+               </table>
+               <span style="padding-left:5px;">Exempt de TVA :&nbsp;<apex:outputText value="{!$Label.FAL_TVA}" escape="false"/></span><br/>
+               <span style="padding-left:5px; font-weight:700;">Certifié sincère et véritable</span>
+            </div>
+         </div>
+      </div>
+      
+   </div>
+   </body>
+</apex:page>

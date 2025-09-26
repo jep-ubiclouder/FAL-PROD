@@ -1,0 +1,6 @@
+<aura:event type="COMPONENT" >
+    <aura:attribute name="lblStA" type="String"/>
+    <aura:attribute name="lblStB" type="String"/>
+
+
+</aura:event>

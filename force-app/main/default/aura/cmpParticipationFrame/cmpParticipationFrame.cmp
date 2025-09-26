@@ -1,0 +1,48 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" access="global" controller="Ctrl_AssignEventToContact">
+
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="contactId" type="Id" />
+    <aura:attribute name="image" type="Id" />
+    <aura:attribute name="participation" type="bre__BR_Participation__c" access="global" />
+    <aura:attribute name="prefixURL" type="String" default="/sfc/servlet.shepherd/version/download/"/>
+    <aura:attribute name="record" type="Object" />
+    <aura:registerEvent name="appEvent" type="c:EventForAssignToContact"/>
+
+    <!-- <aura:attribute name="recordLoadError" type="String" access="global" />
+    <aura:attribute name="recordType" type="String" access="global" />
+    <aura:attribute name="record" type="Object" /> -->
+
+    <force:recordData aura:id="participationRecord" recordId="{!v.recordId}" targetFields="{!v.participation}" layoutType="FULL" fields="Id, Name,bre__BR_Event__r.Eventtype__c,bre__BR_Event__r.Event_Name__c,bre__BR_Event__c, bre__BR_Event__r.Start_Date__c, bre__BR_Event__r.HIDDEN_Participant_Category__c,
+    bre__BR_Event__r.End_Date__c, bre__BR_Event__r.bre__Venue_Address__c, bre__BR_Event__r.City_for_component__c" recordUpdated="{!c.doInit}" targetRecord="{!v.record}"/>
+
+        <article class="slds-card slds-card_boundary" style="box-shadow: 0px 0px 3px 2px rgba(57, 57, 57, 0.15);">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-5 " style="padding:15px;">
+                    <img class = "img" src="{!v.prefixURL + v.image}" alt="Description of the image" style="box-shadow: 0px 0px 3px 2px rgba(47, 47, 47, 0.15);"/>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-4 slds-p-top_small">
+                    <p class="slds-text-heading_small slds-m-left_x-large" style="font-weight:600; margin-top:5px">{!v.participation.bre__BR_Event__r.Event_Name__c}</p> 
+                    <aura:if isTrue="{!v.participation.bre__BR_Event__r.Eventtype__c != 'Participants'}">
+                    <p style="font-size: 14px; font-weight:500;" class="slds-m-top_small slds-m-left_x-large  slds-m-bottom_small">{!v.participation.bre__BR_Event__r.HIDDEN_Participant_Category__c}</p>
+                    </aura:if>
+                    <p style="font-size: 14px; font-weight:500;" class="slds-m-top_small slds-m-left_x-large slds-m-bottom_small">
+                        {!v.participation.bre__BR_Event__r.City_for_component__c}&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;
+                       
+                         
+                        <lightning:formattedDateTime value="{!v.participation.bre__BR_Event__r.Start_Date__c}" year="numeric" month="numeric" day="numeric"/>
+                        <aura:if isTrue="{!v.participation.bre__BR_Event__r.Start_Date__c != v.participation.bre__BR_Event__r.End_Date__c}">
+                         &nbsp;- &nbsp;
+                        <lightning:formattedDateTime value="{!v.participation.bre__BR_Event__r.End_Date__c}" year="numeric" month="numeric" day="numeric"/>&nbsp;
+                        </aura:if>
+                    </p>
+                    
+                    
+                    <a style="font-size: 15px;" class="slds-m-top_small slds-m-left_x-large slds-m-bottom_small"  href="{!'/' + v.participation.bre__BR_Event__c}" target="_blank">{!$Label.c.FAL_Plus_Info}</a><br/>
+                    
+                    <lightning:button class="slds-m-top_x-small slds-m-left_x-large slds-m-top_small slds-m-bottom_x-small" variant="destructive-text" label="{!$Label.c.FAL_button_label_event2}" onclick="{! c.onClick }"/>
+                    
+                </div>
+            </div> 
+        </article>
+
+</aura:component>

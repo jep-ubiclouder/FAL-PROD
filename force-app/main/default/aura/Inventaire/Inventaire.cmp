@@ -1,0 +1,17 @@
+<aura:component controller="ctrlInventory"
+    implements="flexipage:availableForRecordHome,force:lightningQuickAction,force:hasRecordId,flexipage:availableForAllPageTypes,lightning:availableForFlowScreens"
+    access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="dataTableColumns" type="Object[]" access="global" />
+    <aura:attribute name="mydata" type="Object[]" default="[]" access="global" />
+    <aura:attribute name="initialdata" type="Object[]" default="[]" access="global" />
+    <aura:attribute name="Filter" type="String" access="global" default="" />
+    <aura:attribute name="enableInfiniteLoading" type="Boolean" default="true" access="global" />
+    <aura:attribute name="recordId" type="String" access="global" default="" />
+    <div class="slds-col slds-size_12-of-12 slds-text-align_center slds-p-top_medium">
+        <lightning:datatable aura:id="PackagesDataTable" columns="{! v.dataTableColumns }" data="{! v.mydata }"
+            keyField="Id" onrowaction="{! c.handleRowAction }" enableInfiniteLoading="{! v.enableInfiniteLoading }"
+            hideCheckboxColumn="true" onsave="{!c.onSave}">
+        </lightning:datatable>
+    </div>
+</aura:component>

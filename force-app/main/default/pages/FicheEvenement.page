@@ -1,0 +1,99 @@
+<apex:page standardController="FP2__Project__c" showHeader="false"  renderAs="pdf" applyBodyTag="false"   sidebar="false" standardStylesheets="false" >
+    
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        
+        <apex:messages />
+        <style type="text/css" media="print">
+            @page {
+            @top-center {
+            content: element(header);
+            }
+            @bottom-right {
+            content: element(footer);
+            }
+            }
+            
+            div.footer {
+            display: block;
+            padding: 5px;
+            position: running(footer);
+            }
+            .pagenumber:before {
+            content: counter(page);
+            }
+            
+            .pagecount:before {
+            content: counter(pages);
+            }
+        </style>
+    </head>
+    
+    
+    <div class="footer" style="text-align: center;">
+        <div><span class="pagenumber"/>/ <span class="pagecount"/></div>
+    </div>
+    
+    
+    
+    <!-- Logo -->
+    <div class=" header-left :1px ">
+        <apex:image style="text-align: left;"  url="{!URLFOR($Resource.Logo_FAL)}" />
+    </div>
+    <!-- end Logo -->
+    
+    <div class="header-right" style="text-align: right;">
+        
+        <apex:outputText value="{0, date, MMMM d','  yyyy}">
+            <apex:param value="{!NOW()}" />
+        </apex:outputText>
+        
+    </div>
+    
+    
+    
+    <apex:form > 
+        <apex:pageBlock title="Programme évènement :{!FP2__Project__c.Name} {!FP2__Project__c.Project_Name__c}">
+            <h3>Description:</h3>
+            
+            <apex:outputText value="{!FP2__Project__c.Objectives_in_French__c}" escape="false">
+            </apex:outputText>
+            <b>Trip start :&nbsp;</b><apex:outputText value="{!FP2__Project__c.Start_Date__c}" ></apex:outputText><br/>
+            <br/>
+            <b>Trip end :</b>&nbsp;<apex:outputText value="{!FP2__Project__c.End_Date__c}" ></apex:outputText><br/>
+            <br/>
+            <b>Number of participants :</b>&nbsp;<apex:outputText value="{!FP2__Project__c.Number_of_Confirmed_Registration_PAR__c}"></apex:outputText><br/>
+            <br/>
+        </apex:pageBlock>
+        <h3>
+            Calendrier de l’évènement:  
+        </h3>
+        
+        
+        <apex:repeat value="{!FP2__Project__c.Activities_Calendar__r}" var="Calendar">
+            
+            <table width="100%" style=" border-collapse: collapse;">
+                <tr>
+                    <td style="border: 1px solid #009fe2;padding:5px;"><b>Nom</b></td>
+                    <td style="border: 1px solid #009fe2;padding:5px;"><b>Début</b></td>
+                    <td style="border: 1px solid #009fe2;padding:5px;"><b>Fin</b></td>
+                    
+                    <td style="border: 1px solid #009fe2;padding:5px;"><b>Activité</b></td>
+                    <td style="border: 1px solid #009fe2;padding:5px;"><b>Team Member</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #009fe2;padding:5px;"><apex:outputField value="{!Calendar.Name}" /></td>
+                    <td style="border: 1px solid #009fe2;padding:5px;"><apex:outputField value="{!Calendar.Start__c}" /></td>
+                    <td style="border: 1px solid #009fe2;padding:5px;"><apex:outputField value="{!Calendar.End__c}" /></td>
+                    
+                    <td style="border: 1px solid #009fe2;padding:5px;"><apex:outputField value="{!Calendar.Activity__c}" /></td>
+                    <td style="border: 1px solid #009fe2;padding:5px;"><apex:outputField value="{!Calendar.Recipe_Master__c}" /></td>
+                </tr>   
+            </table>
+            
+        </apex:repeat>
+        
+    </apex:form>
+    
+</apex:page>

@@ -1,0 +1,4 @@
+<design:component>
+	<design:attribute name="zoneId" label="Zone Id" />
+    <design:attribute name="projectType" label=" Project Type" datasource="Formations,Séjours,AutiSport,Activités Vacances,Excursions,Workshops,Stands/Marchés,Présentations,Fêtes" default="Séjours"/>
+</design:component>

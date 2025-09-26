@@ -1,0 +1,183 @@
+<apex:page cache="false" standardController="Campaign" extensions="PDFDonateursRemerciementsController" action="{!getDataAnnualEnt}"  showheader="false" standardStylesheets="false"
+    applyBodyTag="false" applyHtmlTag="false" renderAs="pdf">
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <style>
+             @page{ 
+            size: 21cm 29.7cm; 
+            margin-top:3cm; 
+            margin-bottom: 6cm;
+            font-family: sans-serif;  
+            margin-right: 2cm;
+            margin-left: 2cm;  
+            @bottom-center{ content: element(footer); } 
+            }
+            div.footer {
+                display: block;
+                position: running(footer); 
+                margin-left: 0cm;
+                margin-right: 0cm;
+                margin-bottom: 0.5cm;
+            }
+            .content{
+                margin-top: 15px;
+                margin-left: auto;
+                margin-right: auto;
+                width: 17cm;
+                font-family: sans-serif; 
+                font-size: 14px;
+            }
+            @page :first {
+                margin-top: 3cm;
+            }
+
+            html {
+                font-size: 14px;
+                font-family: sans-serif;
+                position: relative;
+                min-height: 100%;
+                line-height: 19px;
+            }
+
+            .imageright{
+                display: inline-block;
+                width: 32%;
+                text-align: right;
+                float: right;
+                padding-top: 1cm;
+            }
+
+            .texteleft{
+                display: inline-block;
+                width: 65%;
+            }
+
+            span{
+                font-weight: 700;
+            }
+            
+            .left{
+                display: inline-block;
+                width: 74%;
+                height: 60px;
+            
+            }
+
+            .right{
+                display: inline-block;
+                width: 25%;
+                height: 60px;
+            }
+            .addresse {
+                border: 0px solid black;
+                display: block;
+                position:relative;
+                left: 9.2cm;
+                text-align: left;
+                margin-bottom: 1.5cm;
+                word-wrap: break-word;
+                width: 8cm;
+            }
+            table{
+                margin: auto;
+            }
+            .goals{
+                line-height: 15px;
+            }
+        </style>
+    </head>
+    
+    <!--------------------------------------------------------------------------- body ------------------------------------------------------------------------------>
+    <apex:repeat value="{!listremercimentAnnualEnt}" var="rem"> 
+
+    <!--<apex:outputPanel rendered="{!rem.language=='français'}">-->
+
+<div class = "content">
+    <div class="addresse">
+        <br/><br/><br/>
+        <apex:outputText value="{!rem.name}" />
+        <br/>
+        <apex:outputText value="{!rem.billingstreet} " />
+        <br/>
+        <apex:outputText value="{!rem.billingpostalcode} {!rem.billingcity} " />
+        <br/>
+    </div>
+
+        <apex:outputText value="Capellen, le {0,date,dd'/'MM'/'yyyy}">
+            <apex:param value="{!today()}" />
+        </apex:outputtext>
+        <br/><br/><br/>
+        <u><span>CONCERNE : Remerciement pour vos dons à la Fondation Autisme Luxembourg</span></u><br/><br/>
+        <u>N/Réf. : </u>&nbsp;remerciement annuel&nbsp;-&nbsp; <apex:outputText value="{!YEAR(rem.donDate)}" />
+        <div class="lettre">
+            <div class="imageright">
+                <apex:image url="{!Campaign.Photo_for_PDF__c}" width="170px" height="215px"></apex:image>
+            </div>
+            <div style="padding-top: 0.5cm">
+                <br/><apex:outputText value="{!rem.EnteteL}" />,<br/><br/>
+                Tout comme notre équipe pédagogique, vous avez
+                tenu à être «&nbsp;Ëmmer&nbsp;do&nbsp;» afin de garantir le bien-être
+                des personnes avec autisme que la Fondation
+                accompagne quotidiennement. <br/><br/>
+                Nous vous remercions pour votre aide régulière et les
+                dons que vous nous avez fait pour un montant total
+                de <span><apex:outputText value="{0,number}"><apex:param value="{!rem.Amount}"/></apex:outputtext>€</span> en&nbsp; <apex:outputText value="{!YEAR(rem.donDate)}"/>&nbsp;.<br/>
+
+                <br/>La présente lettre vaut de <b>justificatif pour un
+                montant de</b> <span><apex:outputText value="{0,number}"><apex:param value="{!rem.Amount}"/></apex:outputtext>€</span> que vous nous avez adressé via vos dons successifs.
+                N’hésitez pas à nous contacter pour toute question complémentaire. 
+                <br/><br/><b>L’autisme touche plus d'une personne sur 100, soit plus de 6.400 personnes au Luxembourg</b>
+                <br/><br/>N’hésitez pas à suivre notre actualité sur les réseaux sociaux ainsi que sur notre site internet.
+
+                <br/><br/>En espérant pouvoir compter sur votre soutien fidèle au cours de cette année&nbsp;<apex:outputText value="{!YEAR(today())}" />
+                et en vous remerciant une nouvelle fois pour votre soutien, nous vous prions de croire,&nbsp;<apex:outputText value="{!rem.EnteteL}" />, en l'expression de nos sentiments distingués.
+
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <apex:outputPanel rendered="{!if(ISNULL(Campaign.Seuil_signature_de_president__c) || rem.Amount < Campaign.Seuil_signature_de_president__c, true ,false)}">  
+        <div class="left">
+            <p style="padding-left:1cm; line-height: 18px;">
+                Patrick SIMON<br/>
+                Responsable Communication
+            </p>
+        </div>
+
+        <div class="right">
+            <p style="padding-right:0.6cm; line-height: 18px;">
+                Nathalie LEHOUCQ<br/>
+                Directrice Générale
+            </p>
+        </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!if(NOT(ISNULL(Campaign.Seuil_signature_de_president__c)) && rem.Amount >= Campaign.Seuil_signature_de_president__c, true ,false)}">
+        <div class="left">
+            <p style="padding-left:1cm; line-height: 18px;">
+                Marcel DERAVET<br/>
+                Président
+            </p>
+        </div>
+        </apex:outputPanel>
+
+        <table style="margin:auto">
+            <tr>
+                <td style="border:1px solid black;padding:5px; text-align: center; font-size: 10pt;">
+                    <b>Votre don est fiscalement déductible dans les limites des articles 109 et 112 L.I.R.<br/>
+                    Le présent document servira de justificatif pour l’Administration des Contributions Directes.</b> 
+                </td>
+            </tr>
+        </table>
+        
+    </div>
+    <div style="page-break-after:avoid; "></div>
+    <!--</apex:outputPanel>-->
+    </apex:repeat>
+    
+    <!------------------------------------------------------------------------------- end body ---------------------------------------------------------------------->
+
+</apex:page>

@@ -1,0 +1,32 @@
+<aura:component  implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="Ctrl_AssignEventToContact">
+    <!-- forceCommunity:availableForAllPageTypes -->
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="zoneId" type="String" />
+    <aura:attribute name="projectType" type="String" />
+    <aura:attribute name="contact" type="Contact" access="global" />
+    <aura:attribute name="record" type="Object" />
+    <aura:attribute name="listeventsyes" type="bre__BR_Participation__c[]"/>
+    <aura:attribute name="listeventsmaybe" type="bre__BR_Participation__c[]"/>
+    <aura:attribute name="listeventsno" type="bre__BR_Event__c[]"/>
+    <aura:handler event="c:EventForAssignToContact" action="{!c.handleApplicationEvent }"/>
+
+    <force:recordData aura:id="contactRecord" recordId="{!v.recordId}" targetFields="{!v.contact}" layoutType="FULL" fields="Id, Name, TripEventsZone__c" recordUpdated="{!c.doInit}" targetRecord="{!v.record}"/>
+    <div class="slds-align_absolute-center"><p style="font-size: 14px; font-weight:500;">Je suis: {!v.contact.Name}</p></div>
+    <lightning:tabset selectedTabId="one">
+        <lightning:tab label="{!$Label.c.FAL_Tab_Participation_no}"  id="one"> 
+            <aura:iteration  items="{!v.listeventsno}" var="evcontno">
+                <c:cmpEventFrame recordId="{!evcontno.Id}" contactId="{!v.recordId}"/>
+            </aura:iteration>
+        </lightning:tab>
+        <lightning:tab label="{!$Label.c.FAL_Tab_Participation_maybe}"  id="two"> 
+            <aura:iteration  items="{!v.listeventsmaybe}" var="evcontmaybe">
+                <c:cmpParticipationFrame recordId="{!evcontmaybe.Id}" contactId="{!v.recordId}"/>
+            </aura:iteration>
+        </lightning:tab>
+        <lightning:tab label="{!$Label.c.FAL_Tab_Participation_yes}" id="three">
+            <aura:iteration  items="{!v.listeventsyes}" var="evcontyes">
+                <c:cmpParticipationFrame recordId="{!evcontyes.Id}" contactId="{!v.recordId}"/>
+            </aura:iteration>
+        </lightning:tab>
+    </lightning:tabset>
+</aura:component>

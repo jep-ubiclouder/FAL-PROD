@@ -1,0 +1,205 @@
+<apex:page cache="false" standardController="EUcom__Invoice__c" extensions="Ctrl_PDF_facture" action="{!getData}" showheader="false" standardStylesheets="false"
+    applyBodyTag="false" applyHtmlTag="false" renderAs="pdf">
+
+    <head>
+      <style type="text/css">
+         @page {
+            size: A4;
+            padding: 0px;
+            margin: 0px;
+         }
+         html {
+            font-size: 11pt;
+            font-family: sans-serif;
+            position: relative;
+            min-height: 100%;
+            line-height: 19px;
+         }
+
+         #FirstPage {
+            /* Ne rien changer dans cette section pour l'inclusion correcte du fond de page FAL */
+            position: absolute;
+            width: 210mm;
+            height: 297mm;
+            margin: -8px;
+
+         }
+
+         #FirstPage img {
+            /* Ne rien changer dans cette section pour l'inclusion correcte du fond de page FAL */
+            position: absolute;
+            width: 100%;
+            height: 100%;
+         }
+
+         .addresse {
+            display: block;
+            position:relative;
+            left: 10.5cm;
+            text-align: left;
+            margin-top: 4cm;
+         }
+         .place {
+            display: block;
+            position:relative;
+            left: 2.5cm;
+            text-align: left;
+         }
+         .inline{
+            margin-top:0.5cm;
+            display: block;
+            position:relative;
+            left: 2.5cm;
+            text-align: left;
+         }
+         .facture{
+            display: inline-block;
+            position:relative;
+            text-align: left;
+            width: 35%;
+            left: 1.5cm;
+         }
+         .concerne{
+            display: inline-block;
+            position:relative;
+            text-align: left;
+            width: 50%;
+            left: 0.5cm;
+         }
+         .Invoicedetails{
+            margin-top: 1.5cm;
+            display: block;
+            position:relative;
+            text-align: left;
+            width: 17cm;
+            left:2.5cm;
+         }
+         table.table1{ 
+            width: 100%; 
+            border-collapse: collapse; 
+         } 
+         table.table1 td{
+            padding-top:0!important;
+            padding-bottom:0!important; 
+            padding-left:5px!important; 
+            vertical-align: bottom; 
+            margin: 0; 
+            text-align: left; 
+            font-weight: 700;
+         } 
+         .Total{
+            display: block;
+            position:relative;
+            text-align: left;
+            width: 100%;
+            line-height: 0px;
+            padding-bottom: 1.2cm;
+            left:6cm;
+            width: 13.5cm;
+         }
+         table.table2{ 
+            width: 100%; 
+            border-collapse: collapse; 
+         } 
+         table.table2 td{
+            padding-top:0!important;
+            padding-bottom:0!important; 
+            padding-left:5px!important; 
+            vertical-align: bottom; 
+            margin: 0; 
+            padding: 5px; 
+            text-align: left; 
+            font-weight: 700;
+         } 
+         .Iban{
+            left:3.5cm;
+            display: block;
+            position:relative;
+            text-align: left;
+            line-height: 21px;
+            margin-top:2cm;
+         }
+      </style>
+        
+   </head>
+
+   <body>
+      <div id="FirstPage">
+         <img src="{!URLFOR($Resource.PAPIER_ENTETE)}" alt="" />
+         <div class="addresse">
+            <apex:outputText value="{!facture.salutation}" />
+            <br/>
+            <apex:outputText value="{!facture.FirstName} {!facture.LastName}" />
+            <br/>
+            <apex:outputText value="{!facture.MailingStreet} " />
+            <br/>
+            <apex:outputText value="{!facture.MailingCode} {!facture.MailingCity} " />
+            <br/>
+         </div>
+         <div class = "place">
+            <apex:outputText value="Capellen, le {0,date,dd'/'MM'/'yyyy}">
+                <apex:param value="{!EUcom__Invoice__c.EUcom__End_Date__c}" />
+            </apex:outputtext>
+            <br/><br/><br/>
+         </div>
+         <div class="inline">
+            <div class="facture">
+               <b>Note de crédit&nbsp;<apex:outputText value="{!facture.invoicenumber}"></apex:outputText></b>
+            </div>
+            <div class="concerne">
+               <b><u>Concerne :</u>&nbsp;<apex:outputText value="{!facture.ChildFirstName} {!facture.ChildLastName} " /></b> 
+            </div>
+         </div>
+         <div class="Invoicedetails">
+            <table width="80%" style="vertical-align: top; padding-left:0;" class="table1">
+                <tr>
+                    <td width="40%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1px solid black; border-top: double; border-bottom: double; border-right:none; border-left:none">OBJET</td>
+                    <td width="20%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1px solid black; border-top: double; border-bottom: double;text-align:left; border-right:none; border-left:none">PERIODE</td>
+                    <td width="10%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1px solid black; border-top: double;border-bottom: double; text-align:right; border-right:none; border-left:none">QUANTITE</td>
+                    <td width="15%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1px solid black; border-top: double; border-bottom: double;text-align:right; border-right:none; border-left:none">PRIX</td>
+                    <td width="15%" style="vertical-align: top; padding-top:10px!important; padding-bottom:10px!important; border: 1px solid black; border-top: double; border-bottom: double;text-align:right; border-right:none; border-left:none">MONTANT</td>
+                </tr>
+
+               <apex:repeat value="{!listfacture}" var="lfinfo">
+                <tr>
+                    <td width="40%" style="vertical-align: top;">
+                     <p><apex:outputText escape="false" value="{!lfinfo.Description}"/></p>
+                    </td>
+                    <td width="20%" style="vertical-align: top; text-align:left; padding-top:17px!important; ">
+                     <apex:outputText value="{0,date,MM' 'yyyy}">
+                        <apex:param value="{!lfinfo.SDate}" />
+                     </apex:outputtext>
+                    </td>
+                    <td width="10%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important">1</td>
+                    <td width="15%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important"><apex:outputText value="{!lfinfo.Amount}"/></td>
+                    <td width="15%" style="vertical-align: top; text-align:right; padding-right:10px; padding-top:17px!important"><apex:outputText value="{!lfinfo.Amount}"/></td>
+                </tr>
+               </apex:repeat>
+            </table>         
+         </div>
+         <div class="Total">
+         <table width="80%" style="vertical-align: top;" class="table2">
+             <tr>
+               <!--  -->
+                 <td width="70%"><apex:image value="{!$Resource.NCFaveur}" width="6cm" alt="!"/></td>
+                 <td width="15%" style="vertical-align: top; padding-top:25px!important; padding-bottom:15px!important; border: 1px solid black; border-top: double; border-bottom: double; border-right:none; border-left:none; border-bottom:none">Total</td>
+                 <td width="15%" style="vertical-align: top; padding-top:25px!important; padding-bottom:15px!important; border: 1px solid black; border-top: double; border-bottom: double;text-align:right; border-right:none; border-left:none; border-bottom:none"><apex:outputText value="{!facture.AmountTotal}"/></td>
+             </tr>
+             <tr>
+               <td></td>
+               <td colspan="2"><p style="font-size:8pt; font-weight:700;">Exempt de TVA</p>       
+                  <apex:outputText value="{!$Label.FAL_TVA}" escape="false" style="font-size:8pt; font-weight:700;"/>
+                  <br/>
+                  <p style="font-size:8pt; font-weight:700;  padding-top:10px;"><apex:outputText value="{!facture.CodeService}"></apex:outputText>&nbsp;-&nbsp;<apex:outputText value="{!facture.CodeProjet}"></apex:outputText>&nbsp;-&nbsp;<apex:outputText value="{!facture.CodeSejour}"></apex:outputText></p></td>
+             </tr>
+         </table>
+         </div>
+         <div class="Iban" >
+            La FAL se réserve le droit de déduire votre avoir des éventuelles<br/> factures en attente de paiement.<br/><br/>
+            Dans le cas d'un remboursement, il sera effectué sous un délai de 15 jours à<br/> compter de la date de facturation.<br/><br/>
+            Nous vous invitons à nous transmettre le numéro de compte bancaire <br/>sur lequel vous souhatiez le remboursement sous l'adresse :
+            <div style=" padding-left:9.5cm; padding-top:10px; font-size:11pt"><b>comptabilite@fal.lu</b></div>             
+         </div>
+      </div>
+   </body>
+</apex:page>

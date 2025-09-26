@@ -1,0 +1,25 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId">
+    
+    <aura:attribute name="fieldList" type="String[]" default="Beneficiary__c,Relative_of_a_beneficiary__c,Donateur__c,Staff__c,Volunteer__c,Service_Provider__c,Supplier__c,Customer__c,Member_of_Board__c,Member_of_Delegated_Board__c"/> 
+   
+    
+    
+    
+    
+    <lightning:card class="slds-has-bottom-magnet">
+    <lightning:recordViewForm recordId="{!v.recordId}" density="compact" objectApiName="Contact">
+       <div class = "slds-grid slds-gutters slds-wrap slds-m-horizontal_small">
+        <aura:iteration items="{!v.fieldList}" var="item">
+         {!v.Contact.Beneficiary__c}
+           
+                <lightning:outputField class="slds-col slds-size" fieldName="{!item}"/>          
+          		
+            
+        
+            
+            </aura:iteration>	
+        </div>
+     
+    </lightning:recordViewForm>  
+        </lightning:card>	
+</aura:component>

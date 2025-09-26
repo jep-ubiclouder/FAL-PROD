@@ -1,0 +1,1 @@
+@isTest public class FieldTracker_Contact_Test  { public Static TestMethod void initialize_Test(){ Test.startTest(); Contact obj  = (Contact)FieldTracker.TestDataFactory.createSObject('Contact', new Map<String,Object>{}); update obj; Test.stopTest(); } }

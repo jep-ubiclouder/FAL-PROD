@@ -1,0 +1,7 @@
+<design:component >
+    <design:attribute name="textLienFile" label="Text pour lien" />
+    <design:attribute name="link" label="Lien vers le file" />
+    <design:attribute name="docIds" label="DocumentIds" />
+    <design:attribute name="docName" label="Nom du document" />
+    <design:attribute name="etatFile" label="Etat du document" />
+</design:component>

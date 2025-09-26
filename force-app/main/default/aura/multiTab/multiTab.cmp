@@ -1,0 +1,25 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" description="Tabset with multiple flexipage columns per set">
+  <aura:attribute name="width" type="String" description="width of parent region"/>
+  <lightning:flexipageRegionInfo width="{!v.width}" />
+     <lightning:card title="Sections" iconName="custom:custom1">
+        <div class="slds-box">
+  <lightning:tabset>
+    <lightning:tab label="FAL"> Content in Tab One </lightning:tab>
+    <lightning:tab label="Administration"> Content in Tab Two </lightning:tab>
+    <lightning:tab label="Psychopédagogique">
+      Content in Tab Three
+    </lightning:tab>
+    <lightning:tab label="Communication, Bénévolat, Loisirs">
+      Content in Tab Four
+    </lightning:tab>
+    <lightning:tab label="Santé / Hygiène"> Content in Tab Five </lightning:tab>
+    <lightning:tab label="GRH"> Content in Tab Six </lightning:tab>
+    <lightning:tab label="Formation"> Content in Tab Seven </lightning:tab>
+    <lightning:tab label="Infrastructure / Bâtiment">
+      Content in Tab Eight
+    </lightning:tab>
+  </lightning:tabset>
+  
+         </div>
+         </lightning:card>
+</aura:component>

@@ -1,0 +1,105 @@
+<apex:page standardController="bre__BR_Participation__c" language="fr" showHeader="false" sidebar="false" standardStylesheets="false"
+  renderAs="pdf" applyBodyTag="false" extensions="ctrlAttestation">
+  <!-- renderAs="pdf" -->
+
+  <head>
+    <style type="text/css">
+      @page {
+        size: A4;
+        padding: 0px;
+        margin: 0px;
+        /* background-image: url('{!$Resource.PAPIER_ENTETE}');
+                    background-size: 210px 297px !important; */
+      }
+
+      .attestation {
+        padding-top: 7cm;
+
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .maintext {
+        margin-top: 7.5cm;
+        margin: 2.5cm;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 8;
+      }
+
+      .paragraph {
+        text-align: justify;
+        line-height: 200%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="attestation">
+      <h1>ATTESTATION</h1>
+    </div>
+    <div class="maintext">
+      <p class="pargraph">
+        La
+        <b>FONDATION AUTISME LUXEMBOURG</b>, ayant son siège social à Munshausen, 31, Duerefstrooss, mais dont l’administration
+        centrale est établie à L-8310 Capellen, 68, route d’Arlon, représentée par son Conseil des Administrateurs délégués,
+      </p>
+      <p class="pargraph">atteste par la présente que </p>{!bre__BR_Participation__c.Salutation__c}&nbsp;{!bre__BR_Participation__c.FirstName__c}&nbsp;
+      <b>{!UPPER(bre__BR_Participation__c.LastName__c)}</b> 
+      <br/>demeurant à {!bre__BR_Participation__c.Participant_Rue__c}&nbsp;{!bre__BR_Participation__c.Participant_Code_postal__c}&nbsp;{!UPPER(bre__BR_Participation__c.Participant_Ville__c)}
+
+      <p class="pargraph">
+        est salarié
+        <apex:outputText rendered="{! bre__BR_Participation__c.Salutation__c=='Madame' }">e</apex:outputText> de la Fondation Autisme Luxembourg et encadre dans sa fonction d’éducatrice notre groupe d’adultes
+        avec autisme lors du séjour de vacances du
+        <apex:outputText value="{0, date, d.MM.yyyy}">
+          <apex:param value="{!bre__BR_Participation__c.Start_Date__c}" /> </apex:outputText>&nbsp;au
+        <apex:outputText value="{0, date, d.MM.yyyy}">
+          <apex:param value="{!bre__BR_Participation__c.End_Date__c}" /> </apex:outputText>.
+      </p>
+
+      <p class="pargraph">
+        Liste des participants (Nom, Prénom) :
+        <ul>
+          <apex:repeat value="{!participants}" var="participant">
+            <li>
+            
+              <apex:outputText value="{!participant.bre__Contact__r.lastName}"></apex:outputText>&nbsp;
+              <apex:outputText value="{!participant.bre__Contact__r.FirstName}"></apex:outputText>
+
+            </li>
+          </apex:repeat>
+        </ul>
+      </p>
+      <p class="pargraph">
+        Délivrée à des fins administratives à Capellen, le&nbsp;
+        <apex:outputText value="{0,date,  d.MM.yyyy}">
+          <apex:param value="{!TODAY()}" />
+        </apex:outputText>
+        <apex:panelGrid columns="2" width="100%">
+          <apex:panelGrid columns="1" width="100%">
+            <span style="align:left">
+
+              <br/>Christophe WANTZ
+              <br/> Responsable administratif du Service Loisirs
+
+              <br/>
+            </span>
+
+          </apex:panelGrid>
+          <apex:panelGrid columns="1" width="100%">
+            <!-- <apex:image style="text-align: left;" url="{!URLFOR($Resource.Signature)}" /> -->
+            <span style="align:right">
+              <br/> Nathalie LEHOUCQ
+              <br/> Directrice générale
+              <br/>
+            </span>
+
+          </apex:panelGrid>
+
+
+        </apex:panelGrid>
+      </p>
+    </div>
+  </body>
+</apex:page>

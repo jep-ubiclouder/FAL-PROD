@@ -1,0 +1,25 @@
+<aura:component implements="lightning:availableForFlowScreens">
+    <aura:attribute name="textLienFile" type="String" />
+    <aura:attribute name="link" type="String" />
+    <aura:attribute name="docIds" type="String[]"/>
+    <aura:attribute name="docName" type="String"/>
+    <aura:attribute name="etatFile" type="Integer"/>
+    <aura:attribute name="iconName" type="String" default="utility:error" access="global" />
+    <aura:attribute name="iconVariant" type="String" default="error" access="global" />
+    <aura:attribute name="disabled" type="Boolean" default="false" access="global" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <div class = 'slds-grid'>
+    <div class='slds-col slds-small-size--1-of-12 slds-medium-size--1-of-12 slds-large-size--1-of-12 slds-box'>
+
+        <lightning:icon class ='slds-align_absolute-center' iconName="{!v.iconName}" size="small" variant="{!v.iconVariant}" /></div>
+        <div class='slds-col slds-small-size--11-of-12 slds-medium-size--11-of-12 slds-large-size--11-of-12 slds-box'>
+        <lightning:fileUpload name="fileUploader" label="{!v.strStatus}" multiple="false"
+            accept="['.jpg', '.jpeg','.pdf','.gif','.png','.JPG', '.JPEG','.PDF','.GIF','.PNG']"
+            disabled="{!v.disabled}" recordId="{!v.attachedRecordId}" onuploadfinished="{! c.handleUploadFinished }" /></div>
+    </div>
+    <div>
+        <ui:outputText value="{!v.textLienFile}"/>	
+        <ui:outputURL value="{!v.link}" label="{!v.docName}"/>
+    </div>
+</aura:component>

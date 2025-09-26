@@ -1,0 +1,143 @@
+<apex:page standardController="Contact" language="fr" showHeader="false" renderAs="pdf" sidebar="false" standardStylesheets="false"
+   applyBodyTag="false">
+
+
+
+   <head>
+      <style >
+         @page {
+            size: A4;
+            padding: 0px;
+            margin: 0px;
+            /* background-image: url('{!$Resource.PAPIER_ENTETE}');
+                background-size: 210px 297px !important; */
+         }
+
+         #FirstPage {
+            /* Ne rien changer dans cette section pour l'inclusion correcte du fond de page FAL */
+            position: absolute;
+            width: 210mm;
+            height: 297mm;
+            /* border: 3px double #f00; */
+            margin: -8px;
+
+         }
+
+         #FirstPage img {
+            /* Ne rien changer dans cette section pour l'inclusion correcte du fond de page FAL */
+            position: absolute;
+            width: 100%;
+            height: 100%;
+         }
+
+ #FirstPage .article {
+                position: relative;
+                width: 85%;
+                height: 100%;
+                color: rgb(0, 0, 0);
+                margin-left: 2cm;
+              margin-right: 2.5cm;
+                text-align: justify;
+                font-family: Tahoma, Verdana;
+                font-size: 8;
+            }
+
+         
+
+            #Remainder {
+                margin-top: 32mm;
+                page-break-before: always;
+            }
+
+            #Remainder .article {
+                position: relative;
+                width: 85%;
+                height: 100%;
+                color: rgb(0, 0, 0);
+                margin-left: 2cm;
+               margin-right: 2.5cm;
+                text-align: justify;
+                font-family: Tahoma, Verdana;
+                font-size: 8;
+            }
+            .article>p{
+            text-align:justify;
+            font-family: Tahoma, Verdana;
+            }
+
+
+            #FirstPage .chapeau {
+                position: relative;
+                margin-top: 45mm;
+                color: rgb(0, 0, 0);
+                margin-left: 2cm;
+                margin-right: 1cm;
+                text-align: justify;
+                font-family: Tahoma, Verdana, sans-serif;
+                font-size: 10;
+            }
+        </style>
+   </head>
+
+   <body>
+      <div id="FirstPage">
+         <!--Premiere page: contient le fond de page FAL
+                SAlesforce ne supporte pas les CSS3 nous ne pouvons pas utiliser les directive CCS dans la section @page et background-image
+             -->
+         <img src="{!URLFOR($Resource.PAPIER_ENTETE)}" alt="" />
+
+         <div>
+            <div class='chapeau'>
+               <p>
+                  <center>
+                     <b>Engagement de confidentialité</b> <br />
+                  
+                   <b>pour les personnes ayant vocation à manipuler des données à caractère personnel</b>
+                
+                  </center>
+               </p>
+               
+                   </div>
+            <div class='article'>
+            
+              <p> Je soussigné(e) <b>{!Contact.FirstName}&nbsp;{!UPPER(Contact.LastName)}</b> </p>
+              <p>effectue un stage non rémunéré au sein de la <b>FONDATION AUTISME LUXEMBOURG</b>, 
+              ayant son siège social Munshausen, 31, Duerefstrooss et dont l'administration centrale est établie à L-8810 Capellen, 68, route d'Arlon, inscrite au R.C.S. Luxembourg sous le n° G167,</p>
+              
+              <p>étant amené(e) à accéder à des données à caractère personnel, déclare reconnaître la confidentialité desdites données. </p>
+              
+              <p> je m'engage par conséquent, conformément au règlement (UE) 2016/679 du Parlement européen et du Conseil du 27 avril 2016 relatif à la protection des personnes physiques à l'égard du traitement des données à caractère personnel et à la libre circulation de ces données, à prendre toutes précautions conformes aux usages et à l'état de l'art dans le cadre de mes attributions afin de protéger la confidentialité des informations auxquelles j'ai accès, et en particulier d'empêcher qu'elles ne soient communiquées à des personnes non expressément autorisées à recevoir ces informations. </p>
+            
+              <p> <b>Je m'engage en particulier à :</b></p> 
+              
+              <ul>
+                      <li>ne pas utiliser les données auxquelles je peux accèder à des fins autres que celles prévues par mes attributions;</li>
+                      <li>ne divulger ces données qu'aux personnes dûment autorisées, en raison de leurs fonctions, à en recevoir communication, qu'il s'agisse des personnes privées, publiques, physiques ou morales;</li>
+                      <li>ne faire aucune copie de ces données sauf à ce que cela soit nécessaire à l'exécution de mes fonctions;</li>
+                      <li>prendre toutes les mesures conformes aux usages et à l'art dans le cadre de mes attributions afin d'éviter l'utilisation détourné ou frauduleuse de ces données; </li> 
+                      <li>prendre toutes précautions conformes aux usages et à l'état de l'art pour préserver la sécurité physique et logique de ces données; </li> 
+                      <li>m'assurer, dans la limite de mes sttributions, que seuls des moyens de communication sécurisés seront utilisés pour transférer ces données; </li> 
+                      <li>en cas de cessation de mes fonctions, restituer intégralement les données, fichiers informatiques et tout support d'information relatif à ces données. </li> 
+                
+               </ul>
+               
+               <p> Cet engagement de confidentialité, en viguer pendant toute la durée de mes fonctions, demeurera effectif, sans limitation de durée après la cessation de mes fonctions, quelle qu'en soit la cause, dès lors que cet engagement concerne l'utilisation et la communication de données à caractère personnel. </p>
+               
+               <p>J'ai été informé que toute violation du présent engagement m'expose à des sanctions disciplinaires et pénales conformément à la réglementation en vigueur.</p> 
+            
+               
+               <p>Fait à Munshausen, le {!DAY(TODAY())}.{!MONTH(TODAY())}.{!YEAR(TODAY())}.</p>
+               
+               
+               
+               <p>Nom : <b>{!Contact.FirstName}&nbsp;{!UPPER(Contact.LastName)}</b>       Signature : ........................................................</p> 
+               
+            </div>
+
+
+
+         </div>
+      </div>
+    
+   </body>
+</apex:page>

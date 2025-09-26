@@ -1,0 +1,1 @@
+trigger FieldTracker_Contact on Contact (after update) {  FieldTracker.TrackingSummary.initialize('003',trigger.new, trigger.oldmap); }

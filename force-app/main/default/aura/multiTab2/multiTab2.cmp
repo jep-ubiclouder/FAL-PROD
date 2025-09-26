@@ -1,0 +1,41 @@
+<aura:component implements="lightning:recordHomeTemplate" description="Two tabs one for Tab1 and Tab2, Tab1  two section, left and righr. Tab 2 has one section">
+
+    <aura:attribute name="header" type="Aura.Component[]" />
+    <aura:attribute name="column1" type="Aura.Component[]" />
+    <aura:attribute name="column2" type="Aura.Component[]" />
+    <aura:attribute name="column3" type="Aura.Component[]" />
+    
+    <div>
+        <div>{!v.header}</div><br></br>
+        <lightning:layout horizontalAlign="spread" pullToBoundary="small">
+                        <lightning:layoutItem  flexibility="grow"
+                                              padding="around-small">
+            <lightning:tabset variant="scoped">
+                <lightning:tab label="Tab1" id="Tab1">
+                    <lightning:layout horizontalAlign="spread" pullToBoundary="small">
+                        <lightning:layoutItem size="8" flexibility="grow"
+                                              padding="around-small">
+                            {!v.column1}
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="4" flexibility="grow"
+                                              padding="around-small">        
+                            {!v.column2}
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:tab>
+                <lightning:tab onactive="{! c.handleActive }" label="Tab2" id="Tab2">
+                    <lightning:layout horizontalAlign="spread" pullToBoundary="small">
+                       
+                        <lightning:layoutItem flexibility="grow"
+                                              padding="around-small">        
+                            {!v.column3}
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:tab>
+                
+            </lightning:tabset>
+                            </lightning:layoutItem>
+                    </lightning:layout>
+        
+    </div>
+</aura:component>

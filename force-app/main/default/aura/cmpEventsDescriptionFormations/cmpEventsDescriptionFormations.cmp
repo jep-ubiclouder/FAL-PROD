@@ -1,0 +1,344 @@
+<aura:component  implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="Ctrl_AssignEventToContact">
+
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="contactId" type="Id" />
+    <aura:attribute name="image" type="Id" />
+    <aura:attribute name="photo" type="Id" />
+    <aura:attribute name="langue" type="string" />
+    <aura:attribute name="audience" type="string" />
+    <aura:attribute name="displayfr" type="boolean" default='false' />
+    <aura:attribute name="displayen" type="boolean" default='false' />
+    <aura:attribute name="displayde" type="boolean" default='false' />
+    <aura:attribute name="evenement" type="bre__BR_Event__c" access="global" />
+    <aura:attribute name="prefixURL" type="String" default="/sfc/servlet.shepherd/version/download/" />
+    <aura:registerEvent name="appEvent" type="c:EventForAssignToContact" />
+    <aura:attribute name="record" type="Object" />
+    <force:recordData aura:id="eventRecord" recordId="{!v.recordId}" targetFields="{!v.evenement}" layoutType="FULL"
+        
+        recordUpdated="{!c.doInit}" targetRecord="{!v.record}" />
+
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_1-of-1" style="padding-bottom: 50px;">
+            <div
+                class="slds-col slds-size_1-of-1 slds-large-size_1-of-4 slds-align_absolute-center slds-var-m-top_medium">
+                <img src="{!v.prefixURL + v.image}" alt="Description of the image"
+                    style="box-shadow: 0px 0px 3px 2px rgba(47, 47, 47, 0.15);" />
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-4 slds-var-p-top_small">
+                <div class="slds-align_absolute-center">
+                    <p class=" slds-var-m-top_small" style="font-weight:700; font-size: 18px; ">
+                        {!v.evenement.Event_Name__c}</p>
+                </div>
+                <p style="font-size: 18px; font-weight:700;" class="slds-var-m-top_small slds-align_absolute-center">
+                    <lightning:formattedDateTime value="{!v.evenement.TripEventProject__r.Start_Date__c}" year="numeric"
+                        month="numeric" day="numeric" />&nbsp;
+                    -&nbsp;
+                    <lightning:formattedDateTime value="{!v.evenement.TripEventProject__r.End_Date__c}" year="numeric" month="numeric"
+                        day="numeric" />&nbsp;
+                </p>
+                <p style="font-size: 18px; font-weight:700;" class="slds-var-m-top_small slds-align_absolute-center">
+                    {!v.evenement.Location_name__r.City__c}</p>
+            </div>
+        </div>
+        <!--*****************************************   Zone caregivers   **********************************************-->
+        <aura:if isTrue="{!v.audience=='Caregivers'}">
+            <div class="slds-col slds-size_1-of-2" style="border-right: 5px solid rgb(82, 168, 255);border-bottom: 1px solid rgb(208, 208, 208);  padding-left:10px; padding-right:30px; padding-bottom:10px; min-height:4cm ">
+                <p class="slds-text-heading_small " style="font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_visit_information}</p>
+                <p class="slds-var-m-top_small" style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Trip_Name} - </span>{!v.evenement.Event_Name__c}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Price_for_staff} - </span>{!v.evenement.Price__c}&euro;</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Provider} - </span>{!v.evenement.TripEventProject__r.Provider__r.Name}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Coach_1} - </span>{!v.evenement.TripEventProject__r.Formateur_1__r.Full_Name__c}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Coach_2} - </span>{!v.evenement.TripEventProject__r.Formateur_2__r.Full_Name__c}</p>
+            </div>
+            <div class="slds-col slds-size_1-of-2" style=" border-bottom: 1px solid rgb(208, 208, 208); padding-left:30px; min-height:4cm;">
+                <p class="slds-text-heading_small " style="font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_Location}</p>
+                <p class="slds-var-m-top_small" style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Lodging_holiday_stay_title} - </span>{!v.evenement.Location_name__r.LocationName__c}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_adress} - </span>{!v.evenement.Location_name__r.Street__c}</p> 
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.Postcode_start_place} - </span>{!v.evenement.Location_name__r.Zip_Code__c}</p>         
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.City_start_place} - </span>{!v.evenement.Location_name__r.City__c}</p>          
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.Country_start_place} - </span><span style="text-transform: uppercase">{!v.evenement.Location_name__r.Country__c}</span></p> 
+            	
+            </div>
+			<div class="slds-col slds-size_1-of-2" style="border-right: 5px solid rgb(82, 168, 255); border-bottom: 1px solid rgb(208, 208, 208); padding-left:10px; padding-bottom:10px; padding-right:30px; padding-top:30px; min-height:4cm">
+            	<p class="slds-text-heading_small " style="font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_Schedule}</p>
+            	<p class="slds-var-m-top_small" style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Event_start_date} - </span><lightning:formattedDateTime value="{!v.evenement.Start_Date__c}" year="numeric" month="numeric" day="numeric" /></p>
+            	<p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Event_end_date} - </span><lightning:formattedDateTime value="{!v.evenement.End_Date__c}" year="numeric" month="numeric" day="numeric" /></p>
+            	<p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Start_time_participants} - </span>{!v.evenement.Start_Time__c}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_End_time_participants} - </span>{!v.evenement.End_Time__c}</p>
+            </div>
+			 <div class="slds-col slds-size_1-of-2" style="min-height:6cm; border-bottom: 1px solid rgb(208, 208, 208); padding-left:30px; padding-bottom:10px; padding-top:30px; min-height:4.15cm">
+            </div>    
+
+            
+            <div class="slds-col slds-size_1-of-2" style="border-right: 5px solid rgb(82, 168, 255); padding-left:10px; padding-bottom:10px; padding-top:30px; padding-right:30px;">
+                <p class="slds-text-heading_small " style="padding-bottom:10px; font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_Description}</p>
+                <lightning:tabset selectedTabId="one">
+                    <lightning:tab label="Lëtzebuergesch" id="one">
+                        <div class="uiOutputRichText slds-m-left_xxx-large slds-m-right_xxx-large slds-var-m-top_small" >
+                            <ui:outputRichText value="{!v.evenement.TripEventProject__r.Deroulement_in_luxemburgish__c}" />
+                           </div> 
+                    </lightning:tab>
+                    <aura:if isTrue="{!v.displayfr}">
+                        <lightning:tab label="Français" id="two">
+                            <div class="uiOutputRichText slds-var-m-top_small" >
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Deroulement_in_french__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                    <aura:if isTrue="{!v.displayen}">
+                        <lightning:tab label="English" id="three">
+                            <div class="uiOutputRichText slds-var-m-top_small" >
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Deroulement_in_english__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                    <aura:if isTrue="{!v.displayde}">
+                        <lightning:tab label="Deutsch" id="for">
+                            <div class="uiOutputRichText slds-var-m-top_small">
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Deroulement_in_german__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                </lightning:tabset>
+            </div>
+            <div class="slds-col slds-size_1-of-2" style="padding-left:30px; padding-bottom:10px; padding-top:30px; padding-right:10px;">
+                <p class="slds-text-heading_small " style="padding-bottom:10px; font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_General_description}</p>
+                <lightning:tabset selectedTabId="one">
+                    <lightning:tab label="Lëtzebuergesch" id="one">
+                        <div class="uiOutputRichText slds-m-left_xxx-large slds-m-right_xxx-large slds-var-m-top_small" >
+                            <ui:outputRichText value="{!v.evenement.TripEventProject__r.Description_in_luxembourgish__c}" />
+                        </div>
+                    </lightning:tab>
+                    <aura:if isTrue="{!v.displayfr}">
+                        <lightning:tab label="Français" id="two">
+                            <div class="uiOutputRichText slds-var-m-top_small" >
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Description_in_french__c}" />
+                  
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                    <aura:if isTrue="{!v.displayen}">
+                        <lightning:tab label="English" id="three">
+                            <div class="uiOutputRichText slds-var-m-top_small">
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Description_in_english__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                    <aura:if isTrue="{!v.displayde}">
+                        <lightning:tab label="Deutsch" id="for">
+                            <div class="uiOutputRichText slds-var-m-top_small" >
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Description_in_german__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                </lightning:tabset>
+            </div>
+            
+            <!--*****************************************   Zone volonteers   **********************************************-->
+            <aura:set attribute="else">
+                <aura:if isTrue="{!v.audience=='Volunteers'}">
+                <div class="slds-col slds-size_1-of-2" style="border-right: 5px solid rgb(82, 168, 255); border-bottom: 1px solid rgb(208, 208, 208);  padding-left:10px; padding-right:30px; padding-bottom:10px; min-height:6cm ">
+                    <p class="slds-text-heading_small " style="font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_visit_information}</p>
+                    <p class="slds-var-m-top_small" style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Trip_Name} - </span>{!v.evenement.Event_Name__c}</p>
+                    <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Prix_accompagnateurs} - </span>{!v.evenement.Price__c}&euro;</p>
+                    <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Provider} - </span>{!v.evenement.TripEventProject__r.Provider__r.Name}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Coach_1} - </span>{!v.evenement.TripEventProject__r.Formateur_1__r.Full_Name__c}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Coach_2} - </span>{!v.evenement.TripEventProject__r.Formateur_2__r.Full_Name__c}</p>
+            </div>
+            <div class="slds-col slds-size_1-of-2" style="border-bottom: 1px solid rgb(208, 208, 208); padding-left:30px; padding-top:30px; min-height:6cm;">
+                <p class="slds-text-heading_small " style="font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_Location}</p>
+                <p class="slds-var-m-top_small" style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Lodging_holiday_stay_title} - </span>{!v.evenement.Location_name__r.LocationName__c}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_adress} - </span>{!v.evenement.Location_name__r.Street__c}</p> 
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.Postcode_start_place} - </span>{!v.evenement.Location_name__r.Zip_Code__c}</p>         
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.City_start_place} - </span>{!v.evenement.Location_name__r.City__c}</p>          
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.Country_start_place} - </span><span style="text-transform: uppercase">{!v.evenement.Location_name__r.Country__c}</span></p> 
+            	<p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Event_start_date} - </span><lightning:formattedDateTime value="{!v.evenement.Start_Date__c}" year="numeric" month="numeric" day="numeric" /></p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Event_end_date} - </span><lightning:formattedDateTime value="{!v.evenement.End_Date__c}" year="numeric" month="numeric" day="numeric" /></p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Start_time_participants} - </span>{!v.evenement.Start_Time__c}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_End_time_participants} - </span>{!v.evenement.End_Time__c}</p>
+            </div>
+                    
+            <div class="slds-col slds-size_1-of-2" style="border-right: 5px solid rgb(82, 168, 255); border-bottom: 1px solid rgb(208, 208, 208); padding-left:10px; padding-bottom:10px; padding-right:30px; padding-top:30px; min-height:4cm">
+            	<p class="slds-text-heading_small " style="font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_Schedule}</p>
+            	<p class="slds-var-m-top_small" style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Event_start_date} - </span><lightning:formattedDateTime value="{!v.evenement.Start_Date__c}" year="numeric" month="numeric" day="numeric" /></p>
+            	<p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Event_end_date} - </span><lightning:formattedDateTime value="{!v.evenement.End_Date__c}" year="numeric" month="numeric" day="numeric" /></p>
+            	<p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Start_time_participants} - </span>{!v.evenement.Start_Time__c}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_End_time_participants} - </span>{!v.evenement.End_Time__c}</p>
+            </div>
+			 <div class="slds-col slds-size_1-of-2" style="min-height:6cm; border-bottom: 1px solid rgb(208, 208, 208); padding-left:30px; padding-bottom:10px; padding-top:30px; min-height:4.15cm">
+            </div>    
+    
+                    
+                    
+                
+                <div class="slds-col slds-size_1-of-2" style="border-right: 5px solid rgb(82, 168, 255); padding-left:10px; padding-bottom:10px; padding-top:30px; padding-right:30px;">
+                    <p class="slds-text-heading_small " style="padding-bottom:10px; font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_Description}</p>
+                    <lightning:tabset selectedTabId="one">
+                    <lightning:tab label="Lëtzebuergesch" id="one">
+                        <div class="uiOutputRichText slds-m-left_xxx-large slds-m-right_xxx-large slds-var-m-top_small" >
+                            <ui:outputRichText value="{!v.evenement.TripEventProject__r.Deroulement_in_luxemburgish__c}" />
+                        </div>
+                    </lightning:tab>
+                    <aura:if isTrue="{!v.displayfr}">
+                        <lightning:tab label="Français" id="two">
+                            <div class="uiOutputRichText slds-var-m-top_small" >
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Deroulement_in_french__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                    <aura:if isTrue="{!v.displayen}">
+                        <lightning:tab label="English" id="three">
+                            <div class="uiOutputRichText slds-var-m-top_small" >
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Deroulement_in_english__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                    <aura:if isTrue="{!v.displayde}">
+                        <lightning:tab label="Deutsch" id="for">
+                            <div class="uiOutputRichText slds-var-m-top_small">
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Deroulement_in_german__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                </lightning:tabset>
+                </div>
+                <div class="slds-col slds-size_1-of-2" style="padding-left:30px; padding-bottom:10px; padding-top:30px; padding-right:10px;">
+                    <p class="slds-text-heading_small " style="padding-bottom:10px; font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_General_description}</p>
+                    <lightning:tabset selectedTabId="one">
+                    <lightning:tab label="Lëtzebuergesch" id="one">
+                        <div class="uiOutputRichText slds-m-left_xxx-large slds-m-right_xxx-large slds-var-m-top_small">
+                            <ui:outputRichText value="{!v.evenement.TripEventProject__r.Description_in_luxembourgish__c}" />
+                        </div>
+                    </lightning:tab>
+                    <aura:if isTrue="{!v.displayfr}">
+                        <lightning:tab label="Français" id="two">
+                            <div class="uiOutputRichText slds-var-m-top_small">
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Description_in_french__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                    <aura:if isTrue="{!v.displayen}">
+                        <lightning:tab label="English" id="three">
+                            <div class="uiOutputRichText slds-var-m-top_small">
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Description_in_english__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                    <aura:if isTrue="{!v.displayde}">
+                        <lightning:tab label="Deutsch" id="for">
+                            <div class="uiOutputRichText slds-var-m-top_small">
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Description_in_german__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                </lightning:tabset>
+            </div>
+                
+            <!--*****************************************   Zone participants **********************************************-->
+                <aura:set attribute="else">
+                    <aura:if isTrue="{!v.audience=='Participants'}">
+                    <div class="slds-col slds-size_1-of-2" style="border-right: 5px solid rgb(82, 168, 255); border-bottom: 1px solid rgb(208, 208, 208);  padding-left:10px; padding-right:30px; padding-bottom:10px; padding-top:30px; min-height:7cm ">
+                        <p class="slds-text-heading_small " style="font-weight:700; color:rgb(82, 168, 255);">{!$Label.c.FAL_visit_information}</p>
+                         <p class="slds-var-m-top_small" style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Trip_Name} - </span>{!v.evenement.Event_Name__c}</p>
+                        <p style="font-size: 14px; "><span style="font-weight:700;">{!$Label.c.FAL_Event_Price} - </span>{!v.evenement.Price__c}&euro;</p>
+                         <aura:if isTrue="{!v.evenement.Reduced_price_for_participants !=0}">
+                        <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Event_Price_Reduced} - </span>{!v.evenement.Reduced_price__c}&euro;</p>
+                        </aura:if>
+                        <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Provider} - </span>{!v.evenement.TripEventProject__r.Provider__r.Name}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Coach_1} - </span>{!v.evenement.TripEventProject__r.Formateur_1__r.Full_Name__c}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Coach_2} - </span>{!v.evenement.TripEventProject__r.Formateur_2__r.Full_Name__c}</p>
+            </div>
+            <div class="slds-col slds-size_1-of-2" style=" border-bottom: 1px solid rgb(208, 208, 208); padding-left:30px; padding-top:30px; min-height:6cm;">
+                <p class="slds-text-heading_small " style="font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_Location}</p>
+                <p class="slds-var-m-top_small" style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Lodging_holiday_stay_title} - </span>{!v.evenement.Location_name__r.LocationName__c}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_adress} - </span>{!v.evenement.Location_name__r.Street__c}</p> 
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.Postcode_start_place} - </span>{!v.evenement.Location_name__r.Zip_Code__c}</p>         
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.City_start_place} - </span>{!v.evenement.Location_name__r.City__c}</p>          
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.Country_start_place} - </span><span style="text-transform: uppercase">{!v.evenement.Location_name__r.Country__c}</span></p> 
+            </div>
+               
+                 <div class="slds-col slds-size_1-of-2" style="border-right: 5px solid rgb(82, 168, 255); border-bottom: 1px solid rgb(208, 208, 208); padding-left:10px; padding-bottom:10px; padding-right:30px; padding-top:30px; min-height:4cm">
+            	<p class="slds-text-heading_small " style="font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_Schedule}</p>
+            	<p class="slds-var-m-top_small" style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Event_start_date} - </span><lightning:formattedDateTime value="{!v.evenement.Start_Date__c}" year="numeric" month="numeric" day="numeric" /></p>
+            	<p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Event_end_date} - </span><lightning:formattedDateTime value="{!v.evenement.End_Date__c}" year="numeric" month="numeric" day="numeric" /></p>
+            	<p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_Start_time_participants} - </span>{!v.evenement.Start_Time__c}</p>
+                <p style="font-size: 14px;"><span style="font-weight:700;">{!$Label.c.FAL_End_time_participants} - </span>{!v.evenement.End_Time__c}</p>
+            </div>
+			 <div class="slds-col slds-size_1-of-2" style="min-height:6cm; border-bottom: 1px solid rgb(208, 208, 208); padding-left:30px; padding-bottom:10px; padding-top:30px; min-height:4.15cm">
+            </div>    
+
+                        
+                    <div class="slds-align-top slds-col slds-size_1-of-2" style="border-right: 5px solid rgb(82, 168, 255); padding-left:10px; padding-bottom:10px; padding-top:30px; padding-right:30px;">
+                        <p class="slds-text-heading_small " style="padding-bottom:10px; font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_Description}</p>
+                        <lightning:tabset selectedTabId="one">
+                            <lightning:tab label="Lëtzebuergesch" id="one">
+                                <div class="uiOutputRichText slds-m-left_xxx-large slds-m-right_xxx-large slds-var-m-top_small" >
+                                    <ui:outputRichText value="{!v.evenement.TripEventProject__r.Deroulement_in_luxemburgish__c}" />
+                                </div>
+                        </lightning:tab>
+                        <aura:if isTrue="{!v.displayfr}">
+                        <lightning:tab label="Français" id="two">
+                            <div class="uiOutputRichText slds-var-m-top_small" >
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Deroulement_in_french__c}" />
+                            </div>
+                        </lightning:tab>
+                        </aura:if>
+                        <aura:if isTrue="{!v.displayen}">
+                        <lightning:tab label="English" id="three">
+                            <div class="uiOutputRichText slds-var-m-top_small" >
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Deroulement_in_english__c}" />
+                            </div>
+                        </lightning:tab>
+                        </aura:if>
+                        <aura:if isTrue="{!v.displayde}">
+                        <lightning:tab label="Deutsch" id="for">
+                            <div class="uiOutputRichText slds-var-m-top_small">
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Deroulement_in_german__c}" />
+                            </div>
+                        </lightning:tab>
+                        </aura:if>
+                </lightning:tabset>
+            </div>
+            <div class="slds-align-top slds-col slds-size_1-of-2" style="padding-left:30px; padding-bottom:10px; padding-top:30px; padding-right:10px;">
+                <p class="slds-text-heading_small " style="padding-bottom:10px; font-weight:700; color:rgb(82, 168, 255)">{!$Label.c.FAL_General_description}</p>
+                <lightning:tabset selectedTabId="one">
+                    <lightning:tab label="Lëtzebuergesch" id="one">
+                        <!-- style="overflow:scroll; height:15cm;" -->
+                        <div class="uiOutputRichText slds-m-left_xxx-large slds-m-right_xxx-large slds-var-m-top_small" >
+                            <ui:outputRichText value="{!v.evenement.TripEventProject__r.Description_in_luxembourgish__c}" />
+                        </div>
+                    </lightning:tab>
+                    <aura:if isTrue="{!v.displayfr}">
+                        <lightning:tab label="Français" id="two">
+                            <div class="uiOutputRichText slds-var-m-top_small" >
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Description_in_french__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                    <aura:if isTrue="{!v.displayen}">
+                        <lightning:tab label="English" id="three">
+                            <div class="uiOutputRichText slds-var-m-top_small" >
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Description_in_english__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                    <aura:if isTrue="{!v.displayde}">
+                        <lightning:tab label="Deutsch" id="for">
+                            <div class="uiOutputRichText slds-var-m-top_small" >
+                                <ui:outputRichText value="{!v.evenement.TripEventProject__r.Description_in_german__c}" />
+                            </div>
+                        </lightning:tab>
+                    </aura:if>
+                </lightning:tabset>
+            </div>
+            </aura:if>
+            </aura:set>
+            </aura:if>
+            </aura:set>
+        </aura:if>
+
+        
+       
+    </div>
+
+</aura:component>

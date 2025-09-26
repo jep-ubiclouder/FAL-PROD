@@ -1,0 +1,428 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" controller="pbParticipationListController" access="global" >
+    <!-- Handler to call function when page is loaded initially -->
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    <!-- List of contacts stored in attribute -->
+    <aura:attribute name="participantList" type="List" />
+    <aura:attribute name="personnelList" type="List" />
+    <aura:attribute name="volunteerList" type="List" />
+    <aura:attribute name="projectRecord" type="FP2__Project__c"/>
+    <aura:attribute name="recordLoadError" type="String"/>
+ 	<aura:attribute name="isModalOpen" type="boolean" default="false"/>
+    <aura:attribute name="hasError" type="Boolean" default="false"/>
+    <aura:attribute name="participationId" type="String"/>
+    <aura:attribute name="participationRecord" type="bre__BR_Participation__c"/>
+  
+    <force:recordData aura:id="recordLoader"
+    recordId="{!v.participationId}"
+    fields="ContactLink__c,ProjetParticipants__c,Registered_status__c,Reason_for_cancellation_confirmation__c,Create_contract__c,ApprovedDate__c"
+    targetFields="{!v.participationRecord}"
+    />
+
+    
+     <aura:if isTrue="{!v.isModalOpen}">
+        <!-- Modal/Popup Box starts here-->
+
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01"
+                   aria-modal="true" aria-describedby="modal-content-id-1"
+                 class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                
+                
+                <!-- Modal/Popup Box Header Starts here-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit Participation</h2>
+                </header>
+                 
+                <!--Modal Body Start here-->
+                <lightning:recordEditForm recordId="{!v.participationId}" objectApiName="bre__BR_Participation__c" onsuccess="{!c.handleSuccess}">
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                   
+                        
+                    	<lightning:outputField fieldName="ContactLink__c"/>
+                        <lightning:inputField fieldName="Registered_status__c"/>
+                        <lightning:inputField fieldName="Reason_for_cancellation_confirmation__c"/>
+                        <lightning:inputField fieldName="ApprovedDate__c"/>
+                    
+              <aura:if isTrue ="{!v.participationRecord.ProjetParticipants!=NULL}"> 
+                        <lightning:inputField fieldName="Create_contract__c"/>
+                        </aura:if>
+                    </div>
+                   <div class="slds-modal__content slds-p-around_none" id="modal-content-id-2"> 
+                 	<div class="slds-modal__footer">
+                     <lightning:button class="slds-button slds-button_neutral" variant="neutral" label="Cancel" onclick ="{! c.closeModel }"/>
+                     <lightning:button class="slds-button slds-button_brand" type="submit" label="Save"/>  
+                       </div> 
+                   </div>      
+                   </lightning:recordEditForm>  
+             
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </aura:if>
+    
+    
+    
+
+
+    <div class="slds-page-header">
+  <div class="slds-page-header__row">
+    <div class="slds-page-header__col-title">
+      <div class="slds-media">
+        <div class="slds-media__figure">
+          <span class="slds-icon_container slds-icon-custom-custom99" title="Participations">
+            <lightning:icon iconName="custom:custom99" title="custom99"/>
+            <span class="slds-assistive-text">Event Participations</span>
+          </span>
+        </div>
+        <div class="slds-media__body">
+          <div class="slds-page-header__name">
+            <div class="slds-page-header__name-title">
+              <h1>
+                <span class="slds-page-header__title slds-truncate" title="Participations">{!'Event Participations ('+(v.projectRecord.ParticipantsInscriptions__c+v.projectRecord.CaregiversInscriptions__c+v.projectRecord.VolonteersInscriptions__c)+')'}</span>
+                </h1>
+            </div>
+          </div>
+            </div>
+            <aura:if isTrue="{!v.projectRecord.Project_Category__c != 'Leisure Event'}">
+            <div class="slds-media__body slds-p-top_x-small">
+        <lightning:formattedRichText value="{!v.projectRecord.Total_Light__c}"/>
+        </div>
+          </aura:if>      
+        
+      </div>
+    </div>
+  </div>
+</div>
+    <br/>
+    
+    
+
+ 	<aura:if isTrue="{!v.projectRecord.HIDDEN_Audience_Participants__c}">
+	 <article class="slds-card">
+     <div class="slds-card__header slds-grid">
+    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+      <div class="slds-media__figure">
+        <lightning:icon iconName="custom:custom99" title="custom99" size="small"/>
+      
+      </div>
+      <div class="slds-media__body">
+        <h2 class="slds-card__header-title">
+          <a href="#" class="slds-card__header-link slds-truncate" title="Participants">
+            <span>{!(v.projectRecord.Project_Category__c=='Leisure Event'? 'Participants (': 'External Participants (')+ v.projectRecord.ParticipantsInscriptions__c+' confirmed)'}</span>
+          </a>
+        </h2>
+        
+      </div>
+        <div class="slds-media__body slds-p-top_small">
+       
+        <lightning:formattedRichText value="{!v.projectRecord.ParticipantsLight__c}"/>
+         
+        </div>
+      <div class="slds-no-flex">
+       <lightning:button label="New" onclick="{!c.newParticipant}" />
+      </div>
+    </header>
+  </div>
+      
+		<ul class="slds-has-dividers_bottom">
+       		<aura:iteration items="{!v.participantList}" var="participant" indexvar="par">
+				<lightning:recordViewForm recordId="{!participant.Id}" objectApiName="bre__BR_Participation__c">
+					<div class="slds-box slds-theme_default">
+						<lightning:tile>
+                            	<div class="slds-grid slds-wrap slds-m-right_xx-small">
+                            		<div class="slds-col slds-size_1-of-1 slds-wrap">
+                            			<div class="slds-grid">
+                                        	<div class="slds-col slds-size_6-of-12">
+                                            	<div class="slds-grid slds-wrap">
+                                           	 		<div class="slds-col slds-size_2-of-6">                                     
+                                        			<lightning:formattedUrl  class="slds-text-body_regular" value="{!'/' + participant.Id}" label="{!participant.Name}"/>
+                                        			</div>
+                                        			<div class="slds-col slds-wrap">
+                                        			<lightning:formattedUrl  class="slds-text-body_regular" value="{!'/' + participant.bre__Contact__c}" label="{!participant.bre__Contact__r.Name}"/>
+                                        			</div>
+                                         		</div>
+                                        	</div>
+                                            <div class="slds-col slds-size_6-of-12 slds-p-bottom_xx-small">
+                                                <div class="slds-grid slds-wrap ">
+                                                    <div class="slds-col  slds-p-bottom_xx-small">
+                                                        <div class="{!'slds-badge '+(participant.bre__Participate__c=='Yes' ? 'slds-theme_success':'')+(participant.bre__Participate__c=='No' ? 'slds-theme_error':'')+(participant.bre__Participate__c=='Maybe' ? 'slds-theme_warning':'')}">
+                                                        <lightning:formattedText value="{!participant.bre__Participate__c}"/>
+                                                        </div>      
+                                                    </div>
+                                                    <div class="slds-col">
+                                                        <div class="{!'slds-badge '+(participant.Registered_status__c=='Confirmed' ? 'slds-theme_success':'')+(participant.Registered_status__c=='Waiting list' ? 'slds-theme_warning':'')+(or(participant.Registered_status__c=='Cancelled by user',participant.Registered_status__c=='Cancelled by FAL') ? 'slds-theme_error':'')}">
+                                                        <lightning:formattedText value="{!participant.Registered_status__c}"/>
+                                                        </div>
+                                                    </div>
+                                             
+                                                     <div class="slds-col slds-wrap">
+                                                    <lightning:button variant="base" value="{!participant.Id}" label="Edit" title="Edit participation" onclick="{!c.handleOpenModal}"/> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                            			</div> 
+                            	</div>   
+                            	<div class="slds-col slds-size_1-of-1">
+                            		<div class="slds-grid">
+                                        
+                                        <aura:if isTrue="{!v.projectRecord.Project_Category__c=='Leisure Event'}">
+                                        <div class="slds-col slds-size_2-of-12">
+                                        <lightning:outputField fieldName="Age__c" />                            
+                                        </div> 
+                                        <aura:if isTrue="{!v.projectRecord.Project_Category__c=='Learning Event'}">
+                                        <div class="slds-col">
+                                           <lightning:outputField fieldName="Training_completed__c"/>   
+                                            </div>
+                          				</aura:if> 
+                                        </aura:if>
+                                        <div class="slds-col">
+                                        <lightning:outputField fieldName="Create_contract__c" />
+                                        </div>
+                                		<div class="slds-col slds-size_6-of-12 slds-wrap ">
+											<aura:if isTrue="{!participant.Visibility_Check__c}"> 
+                            					<lightning:formattedText  class="slds-text-body_small" value="{!participant.Reason_for_cancellation_confirmation__c}"/>
+                                    		</aura:if> 		
+                                        
+                                    		<div class="slds-grid">
+                         						<div class="slds-col slds-wrap ">
+                                    			<lightning:outputField fieldName="CreatedDate" />
+                                                </div>
+                                    			<div class="slds-col slds-wrap ">
+                                        		<lightning:outputField fieldName="ApprovedDate__c" />
+                                    			</div>
+                                    		</div>
+                             			</div> 
+                            		</div>   
+								</div>   
+							</div>
+						</lightning:tile>
+                    </div>  
+                </lightning:recordViewForm>                     
+            </aura:iteration>
+        </ul>
+  
+    </article>        
+	</aura:if>
+    
+
+    <aura:if isTrue="{!v.projectRecord.HIDDEN_Audience_Staff__c}">
+         <article class="slds-card">
+     <div class="slds-card__header slds-grid">
+    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+      <div class="slds-media__figure">
+        <lightning:icon iconName="custom:custom99" title="custom99" size="small"/>
+      
+      </div>
+      <div class="slds-media__body">
+        <h2 class="slds-card__header-title">
+          <a href="#" class="slds-card__header-link slds-truncate" title="Staff">
+            <span>{!(v.projectRecord.Project_Category__c=='Leisure Event'? 'Caregivers (': 'Staff (')+ v.projectRecord.CaregiversInscriptions__c+' confirmed)'}
+              </span>
+          </a>
+        </h2>
+        
+      </div>
+        <div class="slds-media__body slds-p-top_small">
+       
+        <lightning:formattedRichText value="{!v.projectRecord.StaffLight__c}"/>
+         
+        </div>
+      <div class="slds-no-flex">
+       <lightning:button label="New" onclick="{!c.newPersonnel}" />
+      </div>
+    </header>
+  </div>
+
+		<ul class=" slds-has-dividers_bottom">
+       		<aura:iteration items="{!v.personnelList}" var="personnel" indexvar="per">
+				<lightning:recordViewForm recordId="{!personnel.Id}" objectApiName="bre__BR_Participation__c">
+					<div class="slds-box slds-theme_default">
+						<lightning:tile>
+                           <div class="slds-grid slds-wrap slds-m-right_xx-small">
+                            		<div class="slds-col slds-size_1-of-1 slds-wrap">
+                            			<div class="slds-grid">
+                                        	<div class="slds-col slds-size_6-of-12">
+                                            	<div class="slds-grid slds-wrap">
+                                           	 		<div class="slds-col slds-size_2-of-6">                                     
+                                        			<lightning:formattedUrl  class="slds-text-body_regular" value="{!'/' + personnel.Id}" label="{!personnel.Name}"/>
+                                        			</div>
+                                        			<div class="slds-col slds-wrap">
+                                        			<lightning:formattedUrl  class="slds-text-body_regular" value="{!'/' + personnel.bre__Contact__c}" label="{!personnel.bre__Contact__r.Name}"/>
+                                        			</div>
+                                         		</div>
+                                        	</div>
+                                            <div class="slds-col slds-size_6-of-12 slds-p-bottom_xx-small">
+                                                <div class="slds-grid slds-wrap ">
+                                                    <div class="slds-col slds-p-bottom_xx-small">
+                                                        <div class="{!'slds-badge '+(personnel.bre__Participate__c=='Yes' ? 'slds-theme_success':'')+(personnel.bre__Participate__c=='No' ? 'slds-theme_error':'')+(personnel.bre__Participate__c=='Maybe' ? 'slds-theme_warning':'')}">
+                                                        <lightning:formattedText value="{!personnel.bre__Participate__c}"/>
+                                                        </div>      
+                                                    </div>
+                                                    <div class="slds-col">
+                                                        <div class="{!'slds-badge '+(personnel.Registered_status__c=='Confirmed' ? 'slds-theme_success':'')+(personnel.Registered_status__c=='Waiting list' ? 'slds-theme_warning':'')+(or(personnel.Registered_status__c=='Cancelled by user',personnel.Registered_status__c=='Cancelled by FAL') ? 'slds-theme_error':'')}">
+                                                        <lightning:formattedText value="{!personnel.Registered_status__c}"/>
+                                                        </div>
+                                                    </div>
+                                             
+                                                     <div class="slds-col slds-wrap">
+                                                    <lightning:button variant="base" value="{!personnel.Id}" label="Edit" title="Edit participation" onclick="{!c.handleOpenModal}"/> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                            			</div> 
+                            		</div>   
+                                           
+                            	<div class="slds-col slds-size_1-of-1">
+                            		<div class="slds-grid">
+                                        
+                                        <aura:if isTrue="{!v.projectRecord.Project_Category__c=='Leisure Event'}">
+                                        <div class="slds-col slds-size_2-of-12">
+                                        <lightning:outputField fieldName="Age__c" />                            
+                                        </div>
+                                        </aura:if>
+                                        <aura:if isTrue="{!v.projectRecord.Project_Category__c=='Learning Event'}">
+                                        <div class="slds-col">
+                                           <lightning:outputField fieldName="Training_completed__c"/>   
+                                            </div>
+                          				</aura:if> 
+                                		<div class="slds-col slds-size_6-of-12 slds-wrap">
+											<aura:if isTrue="{!personnel.Visibility_Check__c}"> 
+                            					<lightning:formattedText  class="slds-text-body_small" value="{!personnel.Reason_for_cancellation_confirmation__c}"/>
+                                    		</aura:if> 		
+                                        
+                                    		<div class="slds-grid">
+                         						<div class="slds-col slds-wrap ">
+                                    			<lightning:outputField fieldName="CreatedDate" />
+                                                </div>
+                                    			<div class="slds-col slds-wrap ">
+                                        		<lightning:outputField fieldName="ApprovedDate__c" />
+                                    			</div>
+                                    		</div>
+                             			</div> 
+                            		</div>   
+								</div>   
+                            </div>
+						</lightning:tile>
+                    </div>  
+                </lightning:recordViewForm>                     
+            </aura:iteration>
+        </ul>
+  
+    </article>        
+	</aura:if>
+    
+    
+	<aura:if isTrue="{!v.projectRecord.HIDDEN_Audience_Volunteers__c}">
+   
+     <article class="slds-card">
+		<div class="slds-card__header slds-grid">
+    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+      <div class="slds-media__figure">
+        <lightning:icon iconName="custom:custom99" title="custom99" size="small"/>
+      
+      </div>
+      <div class="slds-media__body">
+        <h2 class="slds-card__header-title">
+          <a href="#" class="slds-card__header-link slds-truncate" title="Volunteers">
+            <span>{!'Volunteers ('+ v.projectRecord.VolonteersInscriptions__c+' confirmed)'}
+              </span> </a>
+        </h2>
+        
+      </div>
+        <div class="slds-media__body slds-p-top_small">
+       
+        <lightning:formattedRichText value="{!v.projectRecord.Volunteers_Light__c}"/>
+         
+        </div>
+      <div class="slds-no-flex">
+       <lightning:button label="New" onclick="{!c.newVolunteer}" />
+      </div>
+    </header>
+  </div>
+      
+		<ul class=" slds-has-dividers_bottom">
+       		<aura:iteration items="{!v.volunteerList}" var="volunteer" indexvar="vol">
+				<lightning:recordViewForm recordId="{!volunteer.Id}" objectApiName="bre__BR_Participation__c">
+					<div class="slds-box slds-theme_default">
+						<lightning:tile >
+                            <div class="slds-grid slds-wrap slds-m-right_xx-small">
+                            		<div class="slds-col slds-size_1-of-1 slds-wrap">
+                            			<div class="slds-grid">
+                                        	<div class="slds-col slds-size_6-of-12">
+                                            	<div class="slds-grid slds-wrap">
+                                           	 		<div class="slds-col slds-size_2-of-6">    
+                                            <lightning:formattedUrl  class="slds-text-body_regular" value="{!'/' + volunteer.Id}" label="{!volunteer.Name}"/>
+                                            </div>
+                                            <div class="slds-col">
+                                            <lightning:formattedUrl  class="slds-text-body_regular" value="{!'/' + volunteer.bre__Contact__c}" label="{!volunteer.bre__Contact__r.Name}"/>
+                                            </div>
+                                        	</div>   
+                                         </div>
+                                        <div class="slds-col slds-size_6-of-12 slds-p-bottom_xx-small">
+                                       		<div class="slds-grid slds-wrap ">
+                                            	<div class="slds-col  slds-p-bottom_xx-small">
+                                        			<div class="{!'slds-badge '+(volunteer.bre__Participate__c=='Yes' ? 'slds-theme_success':'')+(volunteer.bre__Participate__c=='No' ? 'slds-theme_error':'')+(volunteer.bre__Participate__c=='Maybe' ? 'slds-theme_warning':'')}">
+                                        			<lightning:formattedText value="{!volunteer.bre__Participate__c}"/>
+                                        			</div>      
+                                        		</div>
+                                        		<div class="slds-col">
+                                        			<div class="{!'slds-badge '+(volunteer.Registered_status__c=='Confirmed' ? 'slds-theme_success':'')+(or(volunteer.Registered_status__c=='Cancelled by user',volunteer.Registered_status__c=='Cancelled by FAL') ? 'slds-theme_error':'')+(volunteer.Registered_status__c=='Waiting list' ? 'slds-theme_warning':'')}">
+                                        			<lightning:formattedText value="{!volunteer.Registered_status__c}"/>
+                                        			</div>
+                                        		</div>
+                                                 <div class="slds-col slds-wrap">
+                               					<lightning:button variant="base" value="{!volunteer.Id}" label="Edit" title="Edit participation" onclick="{!c.handleOpenModal}"/> 
+                                                </div>
+                                            </div>
+                                        </div>
+                            		</div> 
+                            	</div>   
+                            	<div class="slds-col slds-size_1-of-1">
+                                    <div class="slds-grid">
+                            		<aura:if isTrue="{!v.projectRecord.Project_Category__c=='Leisure Event'}">
+                                        <div class="slds-col slds-size_2-of-12">
+                                        <lightning:outputField fieldName="Age__c" />                            
+                                        </div>
+                                        </aura:if>
+                                        <aura:if isTrue="{!v.projectRecord.Project_Category__c=='Learning Event'}">
+                                        <div class="slds-col">
+                                           <lightning:outputField fieldName="Training_completed__c"/>   
+                                            </div>
+                          				</aura:if> 
+                                		<div class="slds-col slds-size_6-of-12 slds-wrap ">
+											<aura:if isTrue="{!volunteer.Visibility_Check__c}"> 
+                            					<lightning:formattedText  class="slds-text-body_small" value="{!volunteer.Reason_for_cancellation_confirmation__c}"/>
+                                    		</aura:if>
+                                    		<aura:set attribute="else">
+    										</aura:set>
+                                        
+                                    		<div class="slds-grid">
+                         						<div class="slds-col slds-wrap ">
+                                    			<lightning:outputField fieldName="CreatedDate" />
+                                                </div>
+                                    			<div class="slds-col slds-wrap ">
+                                        		<lightning:outputField fieldName="ApprovedDate__c" />
+                                    			</div>
+                                    		</div>
+                             			</div> 
+                            		</div>   
+								</div>   
+							</div>
+						</lightning:tile>
+                    </div>  
+                </lightning:recordViewForm>                     
+            </aura:iteration>
+        </ul>
+        </article>       
+</aura:if>
+
+     
+    
+   
+     
+</aura:component>

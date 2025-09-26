@@ -1,0 +1,230 @@
+<apex:page standardController="Contact" language="en" showHeader="false" renderAs="pdf" sidebar="false" standardStylesheets="false"
+    applyBodyTag="false">
+
+<!-- utiliser le language English pour faire les traductions -->
+
+    <head>
+        <style type="text/css">
+         @page {
+            size: A4;
+            padding: 0px;
+            margin: 0px;
+            /* background-image: url('{!$Resource.PAPIER_ENTETE}');
+                background-size: 210px 297px !important; */
+         }
+
+         #FirstPage {
+            /* Ne rien changer dans cette section pour l'inclusion correcte du fond de page FAL */
+            position: absolute;
+            width: 210mm;
+            height: 297mm;
+            /* border: 3px double #f00; */
+            margin: -8px;
+
+         }
+
+         #FirstPage img {
+            /* Ne rien changer dans cette section pour l'inclusion correcte du fond de page FAL */
+            position: absolute;
+            width: 100%;
+            height: 100%;
+         }
+
+ #FirstPage .article {
+                position: relative;
+                width: 85%;
+                height: 100%;
+                color: rgb(0, 0, 0);
+                margin-left: 2cm;
+              margin-right: 2.5cm;
+                text-align: justify;
+                font-family: Tahoma, Verdana, sans-serif;
+                font-size: 8;
+            }
+
+         
+
+            #Remainder {
+                margin-top: 32mm;
+                page-break-before: always;
+            }
+
+            #Remainder .article {
+                position: relative;
+                width: 85%;
+                height: 100%;
+                color: rgb(0, 0, 0);
+                margin-left: 2cm;
+               margin-right: 2.5cm;
+                text-align: left;
+                font-family: Tahoma, Verdana, sans-serif;
+                font-size: 8;
+            }
+            .article>p{
+            text-align:justify;
+            }
+
+
+            #FirstPage .chapeau {
+                position: relative;
+                margin-top: 45mm;
+                color: rgb(0, 0, 0);
+                margin-left: 2cm;
+                margin-right: 1cm;
+                text-align: left;
+                font-family: Tahoma, Verdana, sans-serif;
+                font-size: 8;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="FirstPage">
+            <!--Premiere page: contient le fond de page FAL
+                SAlesforce ne supporte pas les CSS3 nous ne pouvons pas utiliser les directive CCS dans la section @page et background-image
+             -->
+            <img src="{!URLFOR($Resource.PAPIER_ENTETE)}" alt="" />
+
+            <div>
+                <div class='chapeau'>
+                    <p>
+                        <center>
+                            <b> VOLUNTEER AGREEMENT</b>
+                        </center>
+                    </p>
+                    <table>
+
+                        The present agreement is made between:
+
+                        <tr>
+                            <td style="border: 1px solid black;padding:5%">
+                                <b>the FONDATION AUTISME LUXEMBOURG</b>, with its main office at 31, Duerefstrooss, L-9766 Munshausen
+                                and whose central administration is located at 68, route d’Arlon, L-8310 Capellen,
+                                hereinafter referred to as “the FAL”,</td>
+                        </tr>
+                        <tr>
+                            <td><br/>
+                            and:</td>
+                        </tr>
+
+                        <tr>
+                            <td style="border:1px solid black;padding:5% ; width:100%">
+                                <b>{!Contact.FirstName}&nbsp;{!UPPER(Contact.LastName)} </b>&nbsp; Birthdate:&nbsp;
+                                <apex:outputText value="{0, date, dd/MM/yyyy}">
+                                    <apex:param value="{!contact.Birth_Date__c}" />
+                                </apex:outputText><br/>
+                                Address: &nbsp; {!Contact.MailingStreet} &nbsp; {!Contact.MailingPostalCode}&nbsp;
+                                {!Contact.MailingCity} &nbsp;{!Contact.MailingCountry}&nbsp;
+                                <br/>Phone:&nbsp; {!Contact.MobilePhone} &nbsp; Email:&nbsp;{!Contact.Email}
+                                <br/> hereinafter referred to as “the volunteer”. 
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class='article'>
+                <br/>
+                    <b>Article 1: Nature of volunteering</b>
+
+                    <p style="text-align: justify;"> The FAL may call on the volunteer as&nbsp;an&nbsp;
+                        <apex:outputField value="{!Contact.Wish_Help__c}" />&nbsp;at&nbsp;
+                        <apex:outputField value="{!Contact.Wish_Sites__c}" /> for the&nbsp;
+                        <apex:outputField value="{!Contact.Affectation_benevole__c}" />.
+                    </p>
+                    <p> The nature and execution of the assignments and the timetables will be agreed on in consultation with
+                        the person responsible for the&nbsp;
+                        <apex:outputField value="{!Contact.Affectation_benevole__c}" />&nbsp;and the person in charge of the volunteers, who can be contacted at benevolat@fal.lu.
+                    </p>
+
+                </div>
+                <div class='article'>
+                    <b>Article 2: Duration of the contract and terms of termination</b>
+
+                    <p> This agreement is implemented from
+                        <apex:outputText value="{0,date, dd/MM/yyyy}">
+                            <apex:param value="{!Today()}" /></apex:outputText> for an indefinite period. Each of the parties may terminate this contract
+                        with a notice period of 2 weeks. However, in the event of serious misconduct (e.g. abandonment of
+                        post, serious negligence, non-compliance with health and safety rules, violence, disclosure of Foundation
+                        secrets, theft, drunkenness or taking narcotics, …), the FAL is entitled to terminate the contract
+                        with immediate effect.
+                    </p>
+                </div>
+                <div class='article'>
+                    <b>Article 3: Compensation</b>
+                    <p> No remuneration is due for services rendered.</p>
+                    <p>Nevertheless, the FAL can grant reimbursement of actual costs incurred in the context of the assignments
+                        or activities entrusted to the volunteer. These real costs, for example, might include travel costs
+                        (excluding travel between home and one of the FAL sites) or the costs of purchasing equipment. There
+                        should be prior agreement with the FAL regarding reimbursement of said purchases.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="Remainder">
+            <div class='article'>
+                <b>Article 4: Responsibility of the volunteer</b>
+                <p> The volunteer agrees to respect the internal regulations of the FAL, the volunteer charter and read and acknowledge
+                    the charter for people with autism. These three documents are available on www.fal.lu.</p>
+                <p> The volunteer agrees to respect the people with an autism spectrum disorder (ASD) and their choices and to
+                    act with complete impartiality.
+                </p>
+                <p> The volunteer will, if any damage is observed, notify the person responsible for the service without delay
+                    and preferably within 24 hours at the latest.
+                </p>
+                <p> The volunteer agrees to keep the FAL informed of any change in their personal data.</p>
+            </div>
+            <div class='article'>
+                <b>Article 5: Insurance</b>
+
+                <p> The FAL is insured against the following risks:
+                </p>
+                <span style="margin-left: 3em">- accidents which come under the category of “accident during work/commuting”</span>
+                <br/>
+                <span style="margin-left: 3em">- public liability</span>
+            </div>
+            <br/>
+            <div class='article'>
+                <b>Article 6: Confidentiality</b>
+
+                <p> The volunteer shall handle all FAL internal company information confidentially.</p>
+                <p> The volunteer shall not disclose to third parties any information of which (s)he may have had knowledge of
+                    during the duration of this agreement. Only the necessary disclosure of information in the context of
+                    their respective tasks is permitted, in consultation with the parties concerned.</p>
+                <p> The internal documents received in the course of the voluntary activities remain the exclusive property of
+                    FAL and must be returned to FAL upon termination of this agreement.
+                </p>
+                <p> The obligation of confidentiality binds the volunteer throughout the duration of the present agreement and
+                    beyond.
+                </p>
+                <p> The personal data of the volunteer are treated conforming with the
+                    <u> FAL’s GDPR privacy policy</u>, which can be accessed at www.fal.lu.</p>
+            </div>
+            <div class='article'>
+                <p> Done and signed in Capellen, on
+                    <apex:outputText value="{0,date, dd/MM/yyyy}">
+                        <apex:param value="{!Today()}" /></apex:outputText> in two original copies, namely one for each of the parties.
+                </p>
+                <apex:panelGrid columns="2" width="100%">
+                    <apex:image style="text-align: left;" url="{!URLFOR($Resource.Signature)}" />
+                    <p> &nbsp;</p>
+
+
+                    <apex:panelGrid columns="1" width="100%">
+                        <span style="align:right"> Pour la FAL
+                            <br/> Nathalie LEHOUCQ
+                            <br/> Executive Director
+                            <br/>
+                        </span>
+                    </apex:panelGrid>
+                    <apex:panelGrid columns="1" width="100%"><br/>
+                        <span style="align:right"> {!Contact.FirstName}&nbsp;{!UPPER(Contact.LastName)}
+                            <br/> The volunteer
+                            <br/>
+
+                        </span>
+                    </apex:panelGrid>
+
+                </apex:panelGrid>
+            </div>
+        </div>
+    </body>
+</apex:page>

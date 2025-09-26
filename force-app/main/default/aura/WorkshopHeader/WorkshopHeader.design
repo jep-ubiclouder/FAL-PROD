@@ -1,0 +1,6 @@
+<design:component label="WorkshopHeader">
+    <design:attribute name="title" label="Title" description="Title of the workshop"/>
+    <design:attribute name="description" label="Description" description="Description of the workshop"/>
+    <design:attribute name="description2" label="Description2" description="Description of the workshop 2"/>
+    <design:attribute name="icon" label="ImageId" description="Insert the Image ID"/>       
+</design:component>
