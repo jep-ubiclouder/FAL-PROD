@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "Schicht Related List",
+  "contentBody" : {
+    "activeViewId" : "Schicht_Related_List",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "relatedlist-Rotation__c",
+    "urlPrefix" : "rotation"
+  },
+  "urlName" : "schicht-related-list"
+}

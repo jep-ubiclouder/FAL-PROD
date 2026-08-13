@@ -1,49 +1,62 @@
-<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" access="global" controller="Ctrl_AssignEventToContact">
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" access="global"
+    controller="Ctrl_AssignEventToContact">
 
     <aura:attribute name="recordId" type="Id" />
     <aura:attribute name="contactId" type="Id" />
     <aura:attribute name="image" type="Id" />
     <aura:attribute name="evenement" type="Object" access="global" />
-    <aura:attribute name="prefixURL" type="String" default="/sfc/servlet.shepherd/version/download/"/>
-    <aura:registerEvent name="appEvent" type="c:EventForAssignToContact"/>
+    <aura:attribute name="prefixURL" type="String" default="/sfc/servlet.shepherd/version/download/" />
+    <aura:registerEvent name="appEvent" type="c:EventForAssignToContact" />
     <aura:attribute name="record" type="Object" />
-    <aura:attribute name="isdisabled" type = "boolean" />
+    <aura:attribute name="isdisabled" type="boolean" />
 
-    <force:recordData aura:id="eventRecord" recordId="{!v.recordId}" targetFields="{!v.evenement}" layoutType="FULL" fields="Id, Name,Eventtype__c,Event_Name__c,Start_Date__c, End_Date__c, bre__Venue_Address__c, City_for_component__c,HIDDEN_Participant_Category__c" recordUpdated="{!c.doInit}" targetRecord="{!v.record}"/>
+    <force:recordData aura:id="eventRecord" recordId="{!v.recordId}" targetFields="{!v.evenement}" layoutType="FULL"
+        fields="Id, Name,Eventtype__c,Event_Name__c,Start_Date__c, End_Date__c, bre__Venue_Address__c, City_for_component__c,HIDDEN_Participant_Category__c"
+        recordUpdated="{!c.doInit}" targetRecord="{!v.record}" />
 
-        <article class="slds-card slds-card_boundary" style="box-shadow: 0px 0px 3px 2px rgba(57, 57, 57, 0.15);">
-            <div class="slds-grid slds-wrap">
-                <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-5" style="padding:15px ;">
-                    <img src="{!v.prefixURL + v.image}" alt="Description of the image" style="box-shadow: 0px 0px 3px 2px rgba(47, 47, 47, 0.15);"/>
-                </div>
-                <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-4 slds-p-top_small">
-                    
-                    <p  class="slds-m-left_x-large slds-text-heading_small"  style="font-weight:600; margin-top:5px" href="{!'/' + v.recordId}" target="_blank">{!v.evenement.Event_Name__c}</p>
-                    <!-- <p class="slds-text-heading_small slds-m-left_x-large" style="font-weight:600; margin-top:5px">{!v.evenement.Name}</p>  -->
+    <article class="slds-card slds-card_boundary" style="box-shadow: 0px 0px 3px 2px rgba(57, 57, 57, 0.15);">
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-5" style="padding:15px ;">
+                <img src="{!v.prefixURL + v.image}" alt="Description of the image"
+                    style="box-shadow: 0px 0px 3px 2px rgba(47, 47, 47, 0.15);" />
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-4 slds-p-top_small">
 
-                  
-                    <aura:if isTrue="{!v.evenement.Eventtype__c != 'Participants'}">
-                    <p style="font-size: 14px; font-weight:500;" class="slds-m-top_small slds-m-left_x-large  slds-m-bottom_small">{!v.evenement.HIDDEN_Participant_Category__c}</p>
-                    </aura:if>
-                    <p style="font-size: 14px; font-weight:500;" class="slds-m-top_small slds-m-left_x-large slds-m-bottom_small">
-                        {!v.evenement.City_for_component__c}&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;
-                        
-                        
-                        <lightning:formattedDateTime value="{!v.evenement.Start_Date__c}" year="numeric" month="numeric" day="numeric"/>
-                        <!-- <lightning:formattedDateTime value="{!v.evenement.Start_Date__c}" hour="2-digit" minute="2-digit" hour12="false"/> -->
-                        <aura:if isTrue="{!v.evenement.Start_Date__c != v.evenement.End_Date__c}">
-                         &nbsp; - &nbsp;
-                        <lightning:formattedDateTime value="{!v.evenement.End_Date__c}" year="numeric" month="numeric" day="numeric"/>&nbsp;
+                <p class="slds-m-left_x-large slds-text-heading_small" style="font-weight:600; margin-top:5px"
+                    href="{!'/' + v.recordId}" target="_blank">{!v.evenement.Event_Name__c}</p>
+                <!-- <p class="slds-text-heading_small slds-m-left_x-large" style="font-weight:600; margin-top:5px">{!v.evenement.Name}</p>  -->
+
+
+                <aura:if isTrue="{!v.evenement.Eventtype__c != 'Participants'}">
+                    <p style="font-size: 14px; font-weight:500;"
+                        class="slds-m-top_small slds-m-left_x-large  slds-m-bottom_small">
+                        {!v.evenement.HIDDEN_Participant_Category__c}</p>
+                </aura:if>
+                <p style="font-size: 14px; font-weight:500;"
+                    class="slds-m-top_small slds-m-left_x-large slds-m-bottom_small">
+                    {!v.evenement.City_for_component__c}&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;
+
+
+                    <lightning:formattedDateTime value="{!v.evenement.Start_Date__c}" year="numeric" month="numeric"
+                        day="numeric" />
+                    <!-- <lightning:formattedDateTime value="{!v.evenement.Start_Date__c}" hour="2-digit" minute="2-digit" hour12="false"/> -->
+                    <aura:if isTrue="{!v.evenement.Start_Date__c != v.evenement.End_Date__c}">
+                        &nbsp; - &nbsp;
+                        <lightning:formattedDateTime value="{!v.evenement.End_Date__c}" year="numeric" month="numeric"
+                            day="numeric" />&nbsp;
                         <!-- <lightning:formattedDateTime value="{!v.evenement.End_Date__c}" hour="2-digit" minute="2-digit" hour12="false"/> -->
                     </aura:if>
-                        </p>
-                    
-                    <a style="font-size: 15px;" class="slds-m-left_x-large"  href="{!'/' + v.recordId}" target="_blank">{!$Label.c.FAL_Plus_Info}</a><br/>
-                    
-                    <lightning:button class="slds-m-top_x-small slds-m-left_x-large slds-m-bottom_x-small" variant="brand-outline" label="{!$Label.c.FAL_button_label}" disabled = "{!v.isdisabled}" onclick="{! c.onClick }" />
-                    
-                </div>
-            </div> 
-        </article>
+                </p>
+
+                <a style="font-size: 15px;" class="slds-m-left_x-large" href="{!'/' + v.recordId}"
+                    target="_blank">{!$Label.c.FAL_Plus_Info}</a><br />
+
+                <lightning:button class="slds-m-top_x-small slds-m-left_x-large slds-m-bottom_x-small"
+                    variant="brand-outline" label="{!$Label.c.FAL_button_label}" disabled="{!v.isdisabled}"
+                    onclick="{! c.onClick }" />
+
+            </div>
+        </div>
+    </article>
 
 </aura:component>

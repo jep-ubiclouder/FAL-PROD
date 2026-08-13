@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "Schicht Detail",
+  "contentBody" : {
+    "activeViewId" : "Schicht_Detail",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "detail-Rotation__c",
+    "urlPrefix" : "rotation"
+  },
+  "urlName" : "schicht-detail"
+}
